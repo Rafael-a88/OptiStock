@@ -1,0 +1,116 @@
+﻿<UserControl x:Class="TFG.AgregarProductoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:TFG"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:icons="http://materialdesigninxaml.net/winfx/xaml/icons"
+             Width="1194" Height="Auto">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/MaterialDesignColor.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes;component/Themes/MaterialDesignTheme.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignIcons;component/Themes/MaterialDesignIcons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="MediumAquamarine" Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Agregar Producto" FontSize="24" FontWeight="Bold" Margin="50" Grid.Row="0"/>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Columna Izquierda -->
+            <StackPanel Grid.Column="0" Margin="50,0,10,0">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Nombre:" VerticalAlignment="Center" Margin="0,0,10,0" Width="65"/>
+                    <TextBox x:Name="NombreTextBox" Width="200" Margin="20,0,10,0" Style="{StaticResource MaterialDesignTextBox}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Marca:" VerticalAlignment="Center" Margin="0,0,10,0" Width="65"/>
+                    <TextBox x:Name="MarcaTextBox" Width="200" Margin="20,0,10,0" Style="{StaticResource MaterialDesignTextBox}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Modelo:" VerticalAlignment="Center" Margin="0,0,10,0" Width="65"/>
+                    <TextBox x:Name="ModeloTextBox" Width="200" Margin="20,0,10,0" Style="{StaticResource MaterialDesignTextBox}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Descripción:" VerticalAlignment="Center" Margin="0,0,10,0" Width="65"/>
+                    <TextBox x:Name="DescripcionTextBox" Width="200" Margin="20,0,10,0" Style="{StaticResource MaterialDesignTextBox}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Categoría:" VerticalAlignment="Center" Margin="0,0,10,0" Width="65"/>
+                    <ComboBox x:Name="CategoriaComboBox" Width="200" Margin="20,0,10,0" Style="{StaticResource MaterialDesignComboBox}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="EAN:" VerticalAlignment="Center" Margin="0,0,10,0" Width="65"/>
+                    <TextBox x:Name="EanTextBox" Width="200" Margin="20,0,10,0" PreviewTextInput="EanTextBox_PreviewTextInput" Style="{StaticResource MaterialDesignTextBox}"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Columna Derecha -->
+            <StackPanel Grid.Column="1" Margin="10,0,50,0">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="IVA:" VerticalAlignment="Center" Margin="0,0,10,0" Width="65"/>
+                    <ComboBox x:Name="IvaComboBox" Width="200" Margin="20,0,10,0" SelectionChanged="IvaComboBox_SelectionChanged" Style="{StaticResource MaterialDesignComboBox}">
+                        <ComboBoxItem Content="21.00"/>
+                        <ComboBoxItem Content="10.00"/>
+                        <ComboBoxItem Content="4.00"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Precio Bruto:" VerticalAlignment="Center" Margin="0,0,10,0" Width="85"/>
+                    <TextBox x:Name="PrecioTextBox" Width="200" Margin="0,0,10,0" TextChanged="PrecioTextBox_TextChanged" Style="{StaticResource MaterialDesignTextBox}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Precio PVP:" VerticalAlignment="Center" Margin="0,0,10,0" Width="85"/>
+                    <TextBox x:Name="PrecioTextBoxTotal" Width="200" IsReadOnly="True" Margin="0,0,10,0" Style="{StaticResource MaterialDesignTextBox}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Descuento:" VerticalAlignment="Center" Margin="0,0,10,0" Width="85"/>
+                    <TextBox x:Name="DescuentoTextBox" Width="200" Margin="0,0,10,0" 
+                             PreviewTextInput="DescuentoTextBox_PreviewTextInput" 
+                             Text="0" IsReadOnly="True" Style="{StaticResource MaterialDesignTextBox}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Stock:" VerticalAlignment="Center" Margin="0,0,10,0" Width="65"/>
+                    <TextBox x:Name="StockTextBox" Width="200" Margin="20,0,10,0" Text="0" IsReadOnly="True" Style="{StaticResource MaterialDesignTextBox}"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Imagen:" VerticalAlignment="Center" Margin="0,0,30,0" Width="65"/>
+                    <Button Content="Seleccionar" Width="200" Click="SeleccionarImagen_Click" Style="{StaticResource MaterialDesignFlatButton}"/>
+                </StackPanel>
+
+                <Image x:Name="ImagenSeleccionada" Width="200" Height="200" Margin="0,10,140,0" />
+                <TextBlock x:Name="NombreImagenTextBlock" VerticalAlignment="Center" Margin="91,0,0,0" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Botones de Guardar y Cancelar -->
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" Margin="0,10,100,0">
+            <Button Content="Guardar Producto" Width="120" Click="GuardarButton_Click" Margin="0,0,10,0" Style="{StaticResource MaterialDesignRaisedButton}"/>
+            <Button Content="Cancelar" Width="120" Click="CancelarButton_Click" Margin="0,0,10,0" Style="{StaticResource MaterialDesignFlatButton}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
