@@ -142,12 +142,7 @@
             </ScrollViewer>
 
             <!-- Área de contenido principal -->
-            <Grid Grid.Column="1" Background="White" x:Name="ContenidoPrincipal">
-                <TextBlock Text="Seleccione una opción del menú" 
-                         FontSize="24" 
-                         HorizontalAlignment="Center" 
-                         VerticalAlignment="Center"/>
-            </Grid>
+			<ContentControl x:Name="ContenidoPrincipal" Grid.Column="1" Background="White"/>
         </Grid>
 
         <!-- Barra de estado inferior -->

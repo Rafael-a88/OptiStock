@@ -15,7 +15,7 @@ namespace TFG
         public double Iva { get; set; } // IVA como porcentaje
         public double PrecioTotal { get; set; } // Precio total con IVA incluido
         public string Descripcion { get; set; }
-        public string Categoria { get; set; }
+        public int CategoriaId { get; set; }
         public int Stock { get; set; }
         public string Imagen { get; set; }
         public DateTime FechaCreacion { get; set; }
