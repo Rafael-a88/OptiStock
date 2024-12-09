@@ -28,16 +28,16 @@ namespace TFG
             // Crea una instancia de la vista "CatalogoProductosView"
             CatalogoProductosView catalogoView = new CatalogoProductosView();
 
-            // Obtén una referencia al Grid del área de contenido principal (Grid.Column="1")
-            Grid contenidoPrincipal = (Grid)FindName("ContenidoPrincipal"); 
+            // Obtén una referencia al ContentControl del área de contenido principal
+            ContentControl contenidoPrincipal = (ContentControl)FindName("ContenidoPrincipal");
 
             // Limpia cualquier contenido anterior en el área de contenido principal
-            contenidoPrincipal.Children.Clear();
+            contenidoPrincipal.Content = null; // O simplemente no es necesario limpiar si vas a reemplazar el contenido
 
             // Agrega la vista "CatalogoProductosView" al área de contenido principal
-            contenidoPrincipal.Children.Add(catalogoView);
+            contenidoPrincipal.Content = catalogoView;
         }
 
-        
+
     }
 }

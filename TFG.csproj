@@ -122,7 +122,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BooleanToVisibilityConverter.cs" />
+	  <Page Include="AgregarProductoView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		  <SubType>Designer</SubType>
+	  </Page>
+	  <Compile Include="AgregarProductoView.xaml.cs">
+		  <DependentUpon>AgregarProductoView.xaml</DependentUpon>
+	  </Compile>
+
+	  <Compile Include="BooleanToVisibilityConverter.cs" />
     <Compile Include="CatalogoProductosView.xaml.cs">
       <DependentUpon>CatalogoProductosView.xaml</DependentUpon>
     </Compile>
@@ -141,6 +149,7 @@
       <DependentUpon>Principal.xaml</DependentUpon>
     </Compile>
     <Compile Include="Producto.cs" />
+	  <Compile Include="Categoria.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
