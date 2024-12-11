@@ -12,16 +12,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-
 namespace TFG
 {
+    
     public partial class Principal : Window
     {
         public Principal()
         {
             InitializeComponent();
         }
-
         private void MostrarCatalogoProductos(object sender, RoutedEventArgs e)
         {
             // Crea una instancia de la vista "CatalogoProductosView"
@@ -52,6 +51,7 @@ namespace TFG
             contenidoPrincipal.Content = categoriasView;
         }
 
+
         private void ChangeBackgroundColor(object sender, RoutedEventArgs e)
         {
             // Obtener el botón que fue presionado
@@ -64,5 +64,7 @@ namespace TFG
                 ContenidoPrincipal.Background = color;
             }
         }
+
+
     }
 }
