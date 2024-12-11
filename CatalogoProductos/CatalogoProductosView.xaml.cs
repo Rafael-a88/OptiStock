@@ -1,5 +1,6 @@
 ﻿using MySqlConnector;
 using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SqlClient;
@@ -122,7 +123,7 @@ namespace TFG
 
         private void BuscarTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (BuscarTextBox.Text == "Introduce el producto por ID o por Nombre")
+            if (BuscarTextBox.Text == "Introduce el producto por ID, Nombre, Marca o Categoria")
             {
                 BuscarTextBox.Text = "";
                 BuscarTextBox.Foreground = Brushes.Black;
@@ -133,14 +134,14 @@ namespace TFG
         {
             if (string.IsNullOrWhiteSpace(BuscarTextBox.Text))
             {
-                BuscarTextBox.Text = "Introduce el producto por ID o por Nombre";
+                BuscarTextBox.Text = "Introduce el producto por ID, Nombre, Marca o Categoria";
                 BuscarTextBox.Foreground = Brushes.Gray;
             }
         }
 
         private void BuscarButton_Click(object sender, RoutedEventArgs e)
         {
-            string query = BuscarTextBox.Text == "Buscar producto..." ? "" : BuscarTextBox.Text;
+            string query = BuscarTextBox.Text == "Introduce el producto por ID, Nombre, Marca o Categoria" ? "" : BuscarTextBox.Text;
 
             using (var conexion = new Conexion())
             {
@@ -149,13 +150,18 @@ namespace TFG
             SELECT p.*, c.Nombre AS NombreCategoria 
             FROM productos p
             LEFT JOIN categorias c ON p.CategoriaId = c.Id
-            WHERE p.Nombre LIKE @query OR CAST(p.Id AS CHAR) LIKE @idQuery";
+            WHERE p.Nombre LIKE @query 
+               OR CAST(p.Id AS CHAR) LIKE @idQuery 
+               OR p.Marca LIKE @marcaQuery 
+               OR c.Nombre LIKE @categoriaQuery";
 
                 using (var connection = conexion.ObtenerConexion())
                 using (MySqlCommand command = new MySqlCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@query", "%" + query + "%");
                     command.Parameters.AddWithValue("@idQuery", "%" + query + "%");
+                    command.Parameters.AddWithValue("@marcaQuery", "%" + query + "%");
+                    command.Parameters.AddWithValue("@categoriaQuery", "%" + query + "%");
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
@@ -243,31 +249,26 @@ namespace TFG
                             row++;
                         }
 
+                        // Guardar el archivo en el escritorio
+                        string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                        string filePath = System.IO.Path.Combine(desktopPath, "Catalogo Productos.xlsx");
+
                         // Guardar el archivo
-                        var saveFileDialog = new Microsoft.Win32.SaveFileDialog
-                        {
-                            FileName = "Productos",
-                            DefaultExt = ".xlsx",
-                            Filter = "Excel documents (.xlsx)|*.xlsx"
-                        };
+                        System.IO.FileInfo fi = new System.IO.FileInfo(filePath);
+                        package.SaveAs(fi);
+                        MessageBox.Show("Exportación a Excel completada.");
 
-                        if (saveFileDialog.ShowDialog() == true)
+                        // Abrir el archivo Excel
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                         {
-                            System.IO.FileInfo fi = new System.IO.FileInfo(saveFileDialog.FileName);
-                            package.SaveAs(fi);
-                            MessageBox.Show("Exportación a Excel completada.");
-
-                            // Abrir el archivo Excel
-                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                            {
-                                FileName = fi.FullName,
-                                UseShellExecute = true // Importante para abrir el archivo
-                            });
-                        }
+                            FileName = fi.FullName,
+                            UseShellExecute = true // Importante para abrir el archivo
+                        });
                     }
                 }
             }
         }
+
 
         private void AgregarProductoButton_Click(object sender, RoutedEventArgs e)
         {

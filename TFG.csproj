@@ -108,66 +108,80 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="AgregarProductoView.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="CatalogoProductos\AgregarProductoView.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="CatalogoProductosView.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="CatalogoProductos\CatalogoProductosView.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="CategoriasView.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="CatalogoProductos\DetallesProductoView.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="DetallesProductoView.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="CatalogoProductos\ModificarProductoView.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Categorias\AgregarCategoria.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Categorias\CategoriasView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Categorias\DetallesCategoriaView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="AgregarProductoView.xaml.cs">
-      <DependentUpon>AgregarProductoView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BooleanToVisibilityConverter.cs" />
-    <Compile Include="CatalogoProductosView.xaml.cs">
+    <Compile Include="CatalogoProductos\AgregarProductoView.xaml.cs">
+      <DependentUpon>AgregarProductoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CatalogoProductos\CatalogoProductosView.xaml.cs">
       <DependentUpon>CatalogoProductosView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Categoria.cs" />
-    <Compile Include="CategoriasView.xaml.cs">
-      <DependentUpon>CategoriasView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Conexion.cs" />
-    <Compile Include="DetallesProductoView.xaml.cs">
+    <Compile Include="CatalogoProductos\DetallesProductoView.xaml.cs">
       <DependentUpon>DetallesProductoView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CatalogoProductos\ModificarProductoView.xaml.cs">
+      <DependentUpon>ModificarProductoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CatalogoProductos\Producto.cs" />
+    <Compile Include="Categorias\AgregarCategoria.xaml.cs">
+      <DependentUpon>AgregarCategoria.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Categorias\Categoria.cs" />
+    <Compile Include="Categorias\CategoriasView.xaml.cs">
+      <DependentUpon>CategoriasView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Categorias\DetallesCategoriaView.xaml.cs">
+      <DependentUpon>DetallesCategoriaView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Conexion.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="ModificarProductoView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Principal.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ModificarProductoView.xaml.cs">
-      <DependentUpon>ModificarProductoView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Principal.xaml.cs">
       <DependentUpon>Principal.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Producto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
