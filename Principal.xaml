@@ -1,0 +1,167 @@
+﻿<Window x:Class="TFG.Principal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Sistema de Gestión de Almacén OptiStock" 
+        Height="800" 
+        Width="1600"
+        MaxHeight="1000" 
+        MaxWidth="1600"
+        WindowStyle="SingleBorderWindow">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+
+        <!-- Barra superior con información y opciones generales -->
+        <StackPanel Grid.Row="0" Background="#2196F3">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="OptiStock" 
+                   Foreground="White" 
+                   FontSize="24" 
+                   VerticalAlignment="Center" 
+                   Margin="0,10,0,0"
+                   HorizontalAlignment="Center" 
+                   Grid.Column="1"/>
+            </Grid>
+        </StackPanel>
+
+
+
+        <!-- Contenido principal -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Menú lateral -->
+            <ScrollViewer Grid.Column="0" Background="#F5F5F5">
+                <StackPanel Margin="10">
+                    <!-- Gestión de Productos -->
+                    <GroupBox Header="Gestión de Productos" Margin="0,5">
+                        <StackPanel>
+                            <Button Content="Catálogo de Productos" Margin="5" Click="MostrarCatalogoProductos"/>
+                            <Button Content="Categorías" Margin="5" Click="MostrarCategorias"/>
+                            <Button Content="Precios y Promociones" Margin="5"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- Gestión de Inventario -->
+                    <GroupBox Header="Gestión de Inventario" Margin="0,5">
+                        <StackPanel>
+                            <Button Content="Control de Stock" Margin="5"/>
+                            <Button Content="Movimientos" Margin="5"/>
+                            <Button Content="Ubicaciones" Margin="5"/>
+                            <Button Content="Inventario Físico" Margin="5"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- Ventas -->
+                    <GroupBox Header="Ventas" Margin="0,5">
+                        <StackPanel>
+                            <Button Content="Nueva Venta" Margin="5"/>
+                            <Button Content="Historial de Ventas" Margin="5"/>
+                            <Button Content="Devoluciones" Margin="5"/>
+                            <Button Content="Facturación" Margin="5"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- Compras -->
+                    <GroupBox Header="Compras" Margin="0,5">
+                        <StackPanel>
+                            <Button Content="Órdenes de Compra" Margin="5"/>
+                            <Button Content="Recepción de Mercancía" Margin="5"/>
+                            <Button Content="Gestión de Proveedores" Margin="5"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- Clientes -->
+                    <GroupBox Header="Clientes" Margin="0,5">
+                        <StackPanel>
+                            <Button Content="Gestión de Clientes" Margin="5"/>
+                            <Button Content="Historial de Clientes" Margin="5"/>
+                            <Button Content="Fidelización" Margin="5"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- RRHH -->
+                    <GroupBox Header="Recursos Humanos" Margin="0,5">
+                        <StackPanel>
+                            <Button Content="Empleados" Margin="5"/>
+                            <Button Content="Turnos y Horarios" Margin="5"/>
+                            <Button Content="Nóminas" Margin="5"/>
+                            <Button Content="Permisos y Vacaciones" Margin="5"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- Logística -->
+                    <GroupBox Header="Logística" Margin="0,5">
+                        <StackPanel>
+                            <Button Content="Gestión de Envíos" Margin="5"/>
+                            <Button Content="Rutas de Distribución" Margin="5"/>
+                            <Button Content="Seguimiento de Pedidos" Margin="5"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- Reportes y Análisis -->
+                    <GroupBox Header="Reportes y Análisis" Margin="0,5">
+                        <StackPanel>
+                            <Button Content="Dashboard" Margin="5"/>
+                            <Button Content="Informes de Ventas" Margin="5"/>
+                            <Button Content="Análisis de Inventario" Margin="5"/>
+                            <Button Content="Reportes Financieros" Margin="5"/>
+                            <Button Content="KPIs" Margin="5"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- Configuración -->
+                    <GroupBox Header="Configuración" Margin="0,5">
+                        <StackPanel>
+                            <Button Content="Configuración General" Margin="5"/>
+                            <Button Content="Usuarios y Permisos" Margin="5"/>
+                            <Button Content="Backup y Restauración" Margin="5"/>
+                            <Button Content="Configuración de Impresión" Margin="5"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- Mantenimiento -->
+                    <GroupBox Header="Mantenimiento" Margin="0,5">
+                        <StackPanel>
+                            <Button Content="Equipamiento" Margin="5"/>
+                            <Button Content="Programación de Mantenimiento" Margin="5"/>
+                            <Button Content="Registro de Incidencias" Margin="5"/>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Área de contenido principal -->
+            <ContentControl x:Name="ContenidoPrincipal" Grid.Column="1" Background="MediumAquamarine"/>
+        </Grid>
+
+        <!-- Barra de estado inferior -->
+        <StatusBar Grid.Row="2" Background="#E0E0E0">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusText" Text="Usuario: Administrador"/>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock x:Name="VersionText" Text="Versión 1.0"/>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock x:Name="LastUpdateText" Text="Última actualización: 01/12/2024" HorizontalAlignment="Right"/>
+            </StatusBarItem>
+
+
+        </StatusBar>
+    </Grid>
+</Window>
