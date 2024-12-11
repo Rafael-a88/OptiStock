@@ -8,6 +8,63 @@
              Width="Auto" Height="Auto">
     <UserControl.Resources>
         <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Style TargetType="Button" x:Key="CatalogoStyle">
+            <Setter Property="Background" Value="DodgerBlue"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="BorderBrush" Value="DarkBlue"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="LightSkyBlue"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="Button" x:Key="BotonVerdeStyle">
+            <Setter Property="Background" Value="Green"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="BorderBrush" Value="DarkGreen"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="LightGreen"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -15,21 +72,20 @@
             <TextBlock Text="Catálogo de Productos" FontSize="24" FontWeight="Bold" Margin="50,50,0,10"/>
 
             <Grid>
-                <TextBox x:Name="BuscarTextBox" Width="300" Margin="0,0,0,10" 
+                <TextBox x:Name="BuscarTextBox" Width="350" Margin="0,0,0,10"  
                          GotFocus="BuscarTextBox_GotFocus" 
                          LostFocus="BuscarTextBox_LostFocus" 
-                         Text="Introduce el producto por ID o por Nombre" 
+                         Text="Introduce el producto por ID, Nombre, Marca o Categoria" 
+                         TextAlignment="Center"
                          Foreground="Gray"/>
             </Grid>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Buscar" Width="100" Click="BuscarButton_Click"/>
-                <Button Content="Refrescar" Width="100" Click="RefrescarButton_Click" Margin="10,0,0,0"/>
+                <Button Content="Buscar" Width="100" Click="BuscarButton_Click" Height="35" Style="{StaticResource CatalogoStyle}"/>
+                <Button Content="Refrescar" Width="100" Click="RefrescarButton_Click" Height="35" Margin="10,0,0,0" Style="{StaticResource CatalogoStyle}"/>
             </StackPanel>
 
-            <Button Content="Exportar a Excel" Width="150" Click="ExportarButton_Click" 
-                    HorizontalAlignment="Right" Margin="0,-20,50,0"/>
-
+           
             <ListView x:Name="ProductosListView" Margin="50,10,50,0" MaxHeight="450" MouseDoubleClick="ProductosListView_MouseDoubleClick" Background="Linen">
                 <ListView.View>
                     <GridView>
@@ -107,7 +163,7 @@
 
                         <GridViewColumn Width="100">
                             <GridViewColumn.Header>
-                                <TextBlock Text="Precio Total" MouseDown="Header_Click" Tag="PrecioTotal" 
+                                <TextBlock Text="Precio Total" MouseDown="Header_Click" Tag="Precio Total" 
                              HorizontalAlignment="Center"/>
                             </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
@@ -156,7 +212,7 @@
 
                         <GridViewColumn Width="120">
                             <GridViewColumn.Header>
-                                <TextBlock Text="Fecha Creación" MouseDown="Header_Click" Tag="FechaCreacion" 
+                                <TextBlock Text="Fecha Creación" MouseDown="Header_Click" Tag="Fecha Creacion" 
                              HorizontalAlignment="Center"/>
                             </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
@@ -215,10 +271,12 @@
 
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-                <Button Content="Agregar Producto" Width="150" Click="AgregarProductoButton_Click"/>
-                <Button Content="Modificar Producto" Width="150" Margin="10,0,0,0" Click="ModificarProductoButton_Click"/>
-                <Button Content="Eliminar Producto" Width="150" Margin="10,0,0,0" Click="EliminarProductoButton_Click"/>
+                <Button Content="Agregar Producto" Width="150" Height="35" Click="AgregarProductoButton_Click" Style="{StaticResource CatalogoStyle}"/>
+                <Button Content="Modificar Producto" Width="150" Height="35" Margin="10,0,0,0" Click="ModificarProductoButton_Click" Style="{StaticResource CatalogoStyle}"/>
+                <Button Content="Eliminar Producto" Width="150" Height="35" Margin="10,0,0,0" Click="EliminarProductoButton_Click" Style="{StaticResource CatalogoStyle}"/>
+                <Button Content="Exportar a Excel" Width="150" Height="35" Margin="10,0,0,0" Click="ExportarButton_Click" Style="{StaticResource BotonVerdeStyle}"/>
             </StackPanel>
+
         </StackPanel>
     </Grid>
 </UserControl>
