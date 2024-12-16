@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OptiStock - Decoración</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css"> 
+</head>
+<body>
+    <script>
+        function addToCart(productName, productPrice) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let productIndex = cart.findIndex(item => item.name === productName);
+
+            if (productIndex !== -1) {
+                cart[productIndex].quantity++;
+            } else {
+                cart.push({ name: productName, price: productPrice, quantity: 1 });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert('Producto añadido al carrito'); 
+        }
+    </script>
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="index.html">OptiStock</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="Alimentacion.html">Alimentación</a></li>
+                <li class="nav-item"><a class="nav-link" href="Bazar.html">Bazar</a></li>
+                <li class="nav-item"><a class="nav-link" href="Decoracion.html">Decoración</a></li>
+                <li class="nav-item"><a class="nav-link" href="Disfraces.html">Disfraces</a></li>
+                <li class="nav-item"><a class="nav-link" href="HogaryBaño.html">Hogar y Baño</a></li>
+                <li class="nav-item"><a class="nav-link" href="Hosteleria.html">Hostelería</a></li>
+                <li class="nav-item"><a class="nav-link" href="Juguetes.html">Juguetes</a></li>
+                <li class="nav-item"><a class="nav-link" href="Navidad.html">Navidad</a></li>
+                <li class="nav-item"><a class="nav-link" href="Papeleria.html">Papelería</a></li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0 ml-auto">
+                <input class="form-control mr-sm-2" type="search" placeholder="¿Qué estás buscando?" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+                <a href="Carrito.html" class="btn btn-outline-primary my-2 my-sm-0 ml-2">Ir al Carrito</a>
+            </form>
+        </div>
+    </nav>
+
+    <div class="jumbotron jumbotron-fluid d-flex justify-content-center align-items-center bg-primary">
+        <div class="container text-center">
+            <h1 class="display-4">Decoración</h1>
+            <p class="lead">Artículos decorativos para embellecer tu hogar.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Producto 1 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Decoracion/jarron.jpeg" class="card-img-top" alt="Jarrón Vidrio Coloreado">
+                    <div class="card-body">
+                        <h5 class="card-title">Jarrón Vidrio Coloreado 12cm Surtido</h5>
+                        <p class="card-text">Jarrón de vidrio coloreado de 12 cm, surtido en varios colores.</p>
+                        <p class="card-price"><strong>Precio: 18.15€</strong></p>
+                        <button onclick="addToCart('Jarrón Vidrio Coloreado 12cm Surtido', 18.15)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Producto 2 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Decoracion/estanteria.jpeg" class="card-img-top" alt="Estantería">
+                    <div class="card-body">
+                        <h5 class="card-title">Estantería 295X235X1065MM</h5>
+                        <p class="card-text">Estantería de 295x235x1065 mm, ideal para organizar tu espacio.</p>
+                        <p class="card-price"><strong>Precio: 42.35€</strong></p>
+                        <button onclick="addToCart('Estantería 295X235X1065MM', 42.35)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Producto 3 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Decoracion/vela.jpeg" class="card-img-top" alt="Vela LED">
+                    <div class="card-body">
+                        <h5 class="card-title">Vela LED 15CM Blanca</h5>
+                        <p class="card-text">Vela LED blanca de 15 cm, perfecta para crear ambiente.</p>
+                        <p class="card-price"><strong>Precio: 14.52€</strong></p>
+                        <button onclick="addToCart('Vela LED 15CM Blanca', 14.52)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Producto 4 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Decoracion/Plato.jpeg" class="card-img-top" alt="Plato de Madera">
+                    <div class="card-body">
+                        <h5 class="card-title">Plato Madera de Mango 38CM</h5>
+                        <p class="card-text">Plato de madera de mango de 38 cm, ideal para servir.</p>
+                        <p class="card-price"><strong>Precio: 12.10€</strong></p>
+                        <button onclick="addToCart('Plato Madera de Mango 38CM', 12.10)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Producto 5 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Decoracion/portavela.jpeg" class="card-img-top" alt="Portavela Bambu">
+                    <div class="card-body">
+                        <h5 class="card-title">Portavela Bambú 21X33CM</h5>
+                        <p class="card-text">Portavela de bambú de 21x33 cm, elegante y natural.</p>
+                        <p class="card-price"><strong>Precio: 9.68€</strong></p>
+                        <button onclick="addToCart('Portavela Bambú 21X33CM', 9.68)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Producto 6 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Decoracion/zapatilla.jpeg" class="card-img-top" alt="Zapatilla Surtida">
+                    <div class="card-body">
+                        <h5 class="card-title">Zapatilla Surtida</h5>
+                        <p class="card-text">Zapatilla surtida de colores, cómoda y versátil para el hogar.</p>
+                        <p class="card-price"><strong>Precio: 6.05€</strong></p>
+                        <button onclick="addToCart('Zapatilla Surtida', 6.05)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    <script src="cart.js"></script>
+</body>
+</html>

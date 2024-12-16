@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="stylesForm.css"> 
+    
+</head>
+<body>
+    <style>
+        .container{
+            margin-top: 100px;
+        }
+    </style>
+    <div class="jumbotron jumbotron-fluid bg-primary">
+        <img src="Logo/OptiStockLogo.png" alt="Logo" class="logo"> 
+        <h1 class="display-2 text-white">OptiStock</h1>
+        <p class="lead text-white">Productos de calidad al alcance de tu mano.</p>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-9" id="primerformulario">
+                <h3 class="text-black text-center">Registro</h3>
+                <form id="loginForm"> 
+                    <div class="form-group">
+                        <label for="correo" class="text-black">Correo</label>
+                        <input type="text" class="form-control" id="correo" placeholder="Introduce tu correo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contraseña" class="text-black">Contraseña</label>
+                        <input type="password" class="form-control" id="contraseña" placeholder="Introduce tu contraseña" required>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-dark" id="inicio">Iniciar Sesión</button>
+                        <a href="NuevoUsuario.html" class="btn btn-primary">Nuevo Usuario</a>
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+    <script src="login.js"></script>
+</body>
+</html>

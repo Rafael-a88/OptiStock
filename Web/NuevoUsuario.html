@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Registro</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="stylesForm.css"> 
+</head>
+<body>
+    <div class="jumbotron jumbotron-fluid bg-primary">
+        <img src="Logo/OptiStockLogo.png" alt="Logo" class="logo"> 
+        <h1 class="display-2 text-white">OptiStock</h1>
+        <p class="lead text-white">Productos de calidad al alcance de tu mano.</p>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-9">
+                <h3 class="text-black text-center">Registro</h3>
+                <form id="registroForm">
+                    <div class="form-group">
+                        <label for="nombre" class="text-black">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Introduce tu nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido" class="text-black">Apellidos</label>
+                        <input type="text" class="form-control" id="apellido" name="apellido" placeholder="Introduce tus apellidos" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="direccion" class="text-black">Dirección</label>
+                        <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Introduce tu dirección" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ciudad" class="text-black">Ciudad</label>
+                        <select class="form-control" id="ciudad" name="ciudad" required>
+                            <option value="" disabled selected>Selecciona tu ciudad</option>
+                            <option value="A Coruña">A Coruña</option> 
+                            <option value="Albacete">Albacete</option>
+                            <option value="Alcalá de Henares">Alcalá de Henares</option>
+                            <option value="Alicante">Alicante</option>
+                            <option value="Algeciras">Algeciras</option>
+                            <option value="Almería">Almería</option>
+                            <option value="Avilés">Avilés</option>
+                            <option value="Badajoz">Badajoz</option>
+                            <option value="Barcelona">Barcelona</option>
+                            <option value="Benidorm">Benidorm</option>
+                            <option value="Bilbao">Bilbao</option>
+                            <option value="Burgos">Burgos</option>
+                            <option value="Cáceres">Cáceres</option>
+                            <option value="Cádiz">Cádiz</option>
+                            <option value="Cartagena">Cartagena</option>
+                            <option value="Castellón de la Plana">Castellón de la Plana</option>
+                            <option value="Ceuta">Ceuta</option>
+                            <option value="Cerdanyola del Vallès">Cerdanyola del Vallès</option>
+                            <option value="Córdoba">Córdoba</option>
+                            <option value="Dos Hermanas">Dos Hermanas</option>
+                            <option value="Elche">Elche</option>
+                            <option value="Elda">Elda</option>
+                            <option value="Fuenlabrada">Fuenlabrada</option>
+                            <option value="Getafe">Getafe</option>
+                            <option value="Gijón">Gijón</option>
+                            <option value="Granada">Granada</option>
+                            <option value="Huelva">Huelva</option>
+                            <option value="Jaén">Jaén</option>
+                            <option value="Jerez de la Frontera">Jerez de la Frontera</option>
+                            <option value="La Laguna">La Laguna</option>
+                            <option value="Lérida">Lérida</option>
+                            <option value="Linares">Linares</option>
+                            <option value="Logroño">Logroño</option>
+                            <option value="Lugo">Lugo</option>
+                            <option value="Madrid">Madrid</option>
+                            <option value="Málaga">Málaga</option>
+                            <option value="Maracena">Maracena</option>
+                            <option value="Marbella">Marbella</option>
+                            <option value="Melilla">Melilla</option>
+                            <option value="Mérida">Mérida</option>
+                            <option value="Móstoles">Móstoles</option>
+                            <option value="Murcia">Murcia</option>
+                            <option value="Oviedo">Oviedo</option>
+                            <option value="Palencia">Palencia</option>
+                            <option value="Palma">Palma</option>
+                            <option value="Pamplona">Pamplona</option>
+                            <option value="Pontevedra">Pontevedra</option>
+                            <option value="Reus">Reus</option>
+                            <option value="Ronda">Ronda</option>
+                            <option value="Salamanca">Salamanca</option>
+                            <option value="San Sebastián">San Sebastián</option>
+                            <option value="Santa Coloma de Gramenet">Santa Coloma de Gramenet</option>
+                            <option value="Santa Cruz de Tenerife">Santa Cruz de Tenerife</option>
+                            <option value="Santiago de Compostela">Santiago de Compostela</option>
+                            <option value="Sevilla">Sevilla</option>
+                            <option value="Talavera de la Reina">Talavera de la Reina</option>
+                            <option value="Tarragona">Tarragona</option>
+                            <option value="Tenerife">Tenerife</option>
+                            <option value="Terrassa">Terrassa</option>
+                            <option value="Toledo">Toledo</option>
+                            <option value="Torrejón de Ardoz">Torrejón de Ardoz</option>
+                            <option value="Valencia">Valencia</option>
+                            <option value="Valladolid">Valladolid</option>
+                            <option value="Vigo">Vigo</option>
+                            <option value="Zaragoza">Zaragoza</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="correoRegistro" class="text-black">Correo</label>
+                        <input type="email" class="form-control" id="correoRegistro" name="correo" placeholder="Introduce tu correo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contraseñaRegistro" class="text-black">Contraseña</label>
+                        <input type="password" class="form-control" id="contraseñaRegistro" name="contraseña" placeholder="Introduce tu contraseña" required>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-dark">Registrar</button>
+                        <a href="Formulario.html" class="btn btn-primary">Acceso</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="Registro.js"></script>
+</body>
+</html>
