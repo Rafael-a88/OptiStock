@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OptiStock - Alimentación</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css"> 
+</head>
+<body>
+    <script>
+        function addToCart(productName, productPrice) {
+          let cart = JSON.parse(localStorage.getItem('cart')) || [];
+          let productIndex = cart.findIndex(item => item.name === productName);
+    
+          if (productIndex !== -1) {
+            cart[productIndex].quantity++;
+          } else {
+            cart.push({ name: productName, price: productPrice, quantity: 1 });
+          }
+    
+          localStorage.setItem('cart', JSON.stringify(cart));
+          alert('Producto añadido al carrito'); 
+        }
+      </script>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="index.html">OptiStock</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="Alimentacion.html">Alimentación</a></li>
+                <li class="nav-item"><a class="nav-link" href="Bazar.html">Bazar</a></li>
+                <li class="nav-item"><a class="nav-link" href="Decoracion.html">Decoración</a></li>
+                <li class="nav-item"><a class="nav-link" href="Disfraces.html">Disfraces</a></li>
+                <li class="nav-item"><a class="nav-link" href="HogaryBaño.html">Hogar y Baño</a></li>
+                <li class="nav-item"><a class="nav-link" href="Hosteleria.html">Hostelería</a></li>
+                <li class="nav-item"><a class="nav-link" href="Juguetes.html">Juguetes</a></li>
+                <li class="nav-item"><a class="nav-link" href="Navidad.html">Navidad</a></li>
+                <li class="nav-item"><a class="nav-link" href="Papeleria.html">Papelería</a></li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0 ml-auto">
+                <input class="form-control mr-sm-2" type="search" placeholder="¿Qué estás buscando?" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+                <a href="Carrito.html" class="btn btn-outline-primary my-2 my-sm-0 ml-2">Ir al Carrito</a>
+            </form>
+            
+        </div>
+    </nav>
+
+    <div class="jumbotron jumbotron-fluid d-flex justify-content-center align-items-center bg-primary">
+        <div class="container text-center">
+            <h1 class="display-4">Alimentación</h1>
+            <p class="lead">Productos frescos y de calidad para tu hogar.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Producto 1 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Alimentacion/alpro.png" class="card-img-top" alt="yogur">
+                    <div class="card-body">
+                        <h5 class="card-title">Yogur natural de avena AlPro</h5>
+                        <p class="card-text">Yogur natural de avena, bajo en grasas y sin azúcares añadidos.</p>
+                        <p class="card-price"><strong>Precio: 1.82€</strong></p>
+                        <button onclick="addToCart('Yogur natural de avena AlPro', 1.82)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Producto 2 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Alimentacion/bebidaalpro.png" class="card-img-top" alt="Bebida">
+                    <div class="card-body">
+                        <h5 class="card-title">Bebida natural de avena AlPro</h5>
+                        <p class="card-text">Bebida de avena natural, ideal para desayunos y batidos.</p>
+                        <p class="card-price"><strong>Precio: 1.45€</strong></p>
+                        <button onclick="addToCart('Bebida natural de avena AlPro', 1.45)" class="btn btn-primary">Añadir al carrito</button> 
+                    </div>
+                </div>
+            </div>
+            <!-- Producto 3 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Alimentacion/Pack 12 cocacolas.png" class="card-img-top" alt="cocacola">
+                    <div class="card-body">
+                        <h5 class="card-title">Pack 12 Coca-Colas</h5>
+                        <p class="card-text">Pack de 12 latas de Coca-Cola, refrescante y deliciosa.</p>
+                        <p class="card-price"><strong>Precio: 14.52€</strong></p>
+                        <button onclick="addToCart('Pack 12 Coca-Colas', 14.52)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Producto 4 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Alimentacion/Tonica.png" class="card-img-top" alt="tonica">
+                    <div class="card-body">
+                        <h5 class="card-title">Tónica Schweppes Lata</h5>
+                        <p class="card-text">Lata de tónica Schweppes, perfecta para cocktails o.</p>
+                        <p class="card-price"><strong>Precio: 1.09€</strong></p>
+                        <button onclick="addToCart('Tónica Schweppes Lata', 1.09)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Producto 5 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Alimentacion/Vinotinto.png" class="card-img-top" alt="Vino">
+                    <div class="card-body">
+                        <h5 class="card-title">Vino Tinto Crianza Rioja</h5>
+                        <p class="card-text">Vino tinto crianza de Rioja, con un sabor intenso y afrutado.</p>
+                        <p class="card-price"><strong>Precio: 10.29€</strong></p>
+                        <button onclick="addToCart('Vino Tinto Crianza Rioja', 10.29)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Producto 6 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Alimentacion/Lanjaron.png" class="card-img-top" alt="agua">
+                    <div class="card-body">
+                        <h5 class="card-title">Agua Mineral 1.5L</h5>
+                        <p class="card-text">Botella de agua mineral de 1.5 litros, refrescante y pura.</p>
+                        <p class="card-price"><strong>Precio: 0.60€</strong></p>
+                        <button onclick="addToCart('Agua Mineral 1.5L', 0.60)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
