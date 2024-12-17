@@ -265,6 +265,10 @@
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="Margin" Value="4"/>
+                        <Setter Property="Background" Value="Linen"/>
+                        <Setter Property="BorderBrush" Value="Blue"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
                     </Style>
                 </ListView.ItemContainerStyle>
             </ListView>
