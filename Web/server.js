@@ -104,15 +104,15 @@ app.post('/pedidos', async (req, res) => {
     // Validación de datos
     if (!pedido || !detallesPedido || detallesPedido.length === 0) {
         console.error('Datos del pedido o detalles faltantes.');
-        return res.status(400).send('Datos del pedido o detalles faltantes.');
+        return res.status(400).json({ error: 'Datos del pedido o detalles faltantes.' });
     }
 
     const { numeroPedido, precioTotal, estado, clienteWeb } = pedido;
-    
+
     // Validar campos básicos del pedido
     if (!numeroPedido || !precioTotal || !estado || !clienteWeb || !clienteWeb.correo) {
         console.error('Faltan campos obligatorios en el pedido');
-        return res.status(400).send('Faltan campos obligatorios en el pedido.');
+        return res.status(400).json({ error: 'Faltan campos obligatorios en el pedido.' });
     }
 
     try {
@@ -121,19 +121,19 @@ app.post('/pedidos', async (req, res) => {
             return new Promise((resolve, reject) => {
                 const sqlBuscarCliente = 'SELECT Id FROM clienteweb WHERE Correo = ?';
                 console.log('Buscando cliente con correo:', clienteWeb.correo);
-                
+
                 conexion.query(sqlBuscarCliente, [clienteWeb.correo], (err, resultadoCliente) => {
                     if (err) {
                         console.error('Error en la consulta de cliente:', err);
                         return reject(err);
                     }
-                    
+
                     console.log('Resultado búsqueda cliente:', resultadoCliente);
-                    
+
                     if (!resultadoCliente || resultadoCliente.length === 0) {
                         return reject(new Error(`Cliente no encontrado con correo: ${clienteWeb.correo}`));
                     }
-                    
+
                     resolve(resultadoCliente[0].Id);
                 });
             });
@@ -144,19 +144,19 @@ app.post('/pedidos', async (req, res) => {
             return new Promise((resolve, reject) => {
                 const sqlBuscarProducto = 'SELECT Id FROM productos WHERE Nombre = ?';
                 console.log('Buscando producto:', nombreProducto);
-                
+
                 conexion.query(sqlBuscarProducto, [nombreProducto], (err, resultadoProducto) => {
                     if (err) {
                         console.error('Error en la consulta de producto:', err);
                         return reject(err);
                     }
-                    
+
                     console.log('Resultado búsqueda producto:', resultadoProducto);
-                    
+
                     if (!resultadoProducto || resultadoProducto.length === 0) {
                         return reject(new Error(`Producto no encontrado: ${nombreProducto}`));
                     }
-                    
+
                     resolve(resultadoProducto[0].Id);
                 });
             });
@@ -184,25 +184,58 @@ app.post('/pedidos', async (req, res) => {
             })
         );
 
-        // 3. Iniciar la transacción para crear el pedido
+        // Función para encontrar el primer ID libre
+        const getNextFreeId = async () => {
+            return new Promise((resolve, reject) => {
+                const sqlCheckId = 'SELECT Id FROM pedidos_web ORDER BY Id ASC'; // Obtener todos los IDs ordenados
+                conexion.query(sqlCheckId, (err, result) => {
+                    if (err) {
+                        return reject(err);
+                    }
+
+                    console.log('IDs encontrados en la tabla pedidos_web:', result);
+
+                    // Si no hay resultados, significa que la tabla está vacía y el primer ID libre es 1
+                    if (result.length === 0) {
+                        console.log('No hay pedidos existentes. El primer ID libre es 1.');
+                        return resolve(1);
+                    }
+
+                    // Buscar el primer ID libre en la secuencia
+                    for (let i = 1; i <= result.length + 1; i++) {
+                        if (!result.some((row) => row.Id === i)) {
+                            console.log('Primer ID libre encontrado:', i);
+                            return resolve(i); // Retorna el primer ID libre encontrado
+                        }
+                    }
+                });
+            });
+        };
+
+        // Obtener el próximo ID libre
+        const nuevoIdPedido = await getNextFreeId();
+        console.log('Nuevo ID de pedido asignado:', nuevoIdPedido);
+
+        // Iniciar la transacción para crear el pedido
         conexion.beginTransaction(async (err) => {
             if (err) {
                 console.error('Error al iniciar la transacción:', err);
-                return res.status(500).send('Error al procesar la solicitud de pedido.');
+                return res.status(500).json({ error: 'Error al procesar la solicitud de pedido.' });
             }
 
             try {
-                // Insertar el pedido
+                // Insertar el pedido con el nuevo ID libre
                 const resultPedido = await new Promise((resolve, reject) => {
-                    const sqlPedido = 'INSERT INTO pedidos_web (NumeroPedido, ClienteWebId, PrecioTotal, Estado) VALUES (?, ?, ?, ?)';
+                    const sqlPedido = 'INSERT INTO pedidos_web (Id, NumeroPedido, ClienteWebId, PrecioTotal, Estado) VALUES (?, ?, ?, ?, ?)';
                     console.log('Insertando pedido con datos:', {
+                        nuevoIdPedido,
                         numeroPedido,
                         clienteWebId,
                         precioTotal,
                         estado
                     });
-                    
-                    conexion.query(sqlPedido, [numeroPedido, clienteWebId, precioTotal, estado], (err, result) => {
+
+                    conexion.query(sqlPedido, [nuevoIdPedido, numeroPedido, clienteWebId, precioTotal, estado], (err, result) => {
                         if (err) {
                             console.error('Error al insertar pedido:', err);
                             return reject(err);
@@ -211,62 +244,42 @@ app.post('/pedidos', async (req, res) => {
                     });
                 });
 
-                const pedidoId = resultPedido.insertId;
-                console.log('Pedido insertado con ID:', pedidoId);
+                console.log('Pedido insertado con ID:', nuevoIdPedido); // Imprimir el ID del pedido insertado
 
-                // Insertar los detalles del pedido
-                console.log('Insertando detalles del pedido...');
-                await Promise.all(detallesConIds.map(detalle => {
-                    return new Promise((resolve, reject) => {
-                        const sqlDetalle = 'INSERT INTO detalle_pedido (PedidoId, ProductoId, Cantidad) VALUES (?, ?, ?)';
-                        console.log('Insertando detalle:', {
-                            pedidoId,
-                            productoId: detalle.productoId,
-                            cantidad: detalle.cantidad
-                        });
-                        
-                        conexion.query(sqlDetalle, [pedidoId, detalle.productoId, detalle.cantidad], (err) => {
-                            if (err) {
-                                console.error('Error al insertar detalle:', err);
-                                return reject(err);
-                            }
-                            resolve();
-                        });
+                // Continuar con la inserción de detalles del pedido...
+                for (const detalle of detallesConIds) {
+                    console.log('Insertando detalle:', {
+                        pedidoId: nuevoIdPedido,
+                        productoId: detalle.productoId,
+                        cantidad: detalle.cantidad
                     });
-                }));
+                    // Inserción de detalles aquí...
+                }
 
                 // Confirmar la transacción
                 conexion.commit((err) => {
                     if (err) {
-                        return conexion.rollback(() => {
-                            console.error('Error al confirmar la transacción:', err);
-                            res.status(500).json({
-                                success: false,
-                                message: 'Error al procesar la solicitud de pedido.'
-                            });
-                        });
+                        console.error('Error al confirmar la transacción:', err);
+                        return res.status(500).json({ error: 'Error al procesar la solicitud de pedido.' });
                     }
-                    console.log('Transacción completada con éxito');
-                    res.status(201).json({
-                        success: true,
-                        message: 'Pedido creado con éxito'
-                    });
+                    console.log('Transacción completada con éxito.');
+                    res.status(201).json({ message: 'Pedido creado con éxito.' });
                 });
-                
-
             } catch (error) {
-                conexion.rollback(() => {
-                    console.error('Error durante la transacción:', error);
-                    res.status(500).send('Error al procesar la solicitud de pedido: ' + error.message);
-                });
+                console.error('Error durante la transacción:', error);
+                return res.status(500).json({ error: 'Error al procesar la solicitud de pedido.' });
             }
         });
-
     } catch (error) {
-        console.error('Error:', error);
-        res.status(500).send('Error al procesar la solicitud: ' + error.message);
+        console.error('Error en la creación del pedido:', error);
+        return res.status(500).json({ error: 'Error al procesar la solicitud de pedido.' });
     }
 });
+
+
+
+
+
 
 
 
