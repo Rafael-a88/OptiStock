@@ -28,7 +28,7 @@
             <Button Content="Iniciar Sesión" Width="203" Height="40" FontSize="24" Margin="0,20,0,0" HorizontalAlignment="Center" Click="IniciarSesionButton_Click"/>
         </StackPanel>
 
-        <Image Grid.Column="1" Source="Imagenes/Optistock.png" Stretch="Fill" Margin="0"/>
+        <Image Grid.Column="1" Source="Imagenes/OptistockLogo.png" Stretch="Fill" Margin="0"/>
 
 
     </Grid>

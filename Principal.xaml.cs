@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+
 namespace TFG
 {
     
@@ -21,6 +22,7 @@ namespace TFG
         {
             InitializeComponent();
         }
+
         private void MostrarCatalogoProductos(object sender, RoutedEventArgs e)
         {
             // Crea una instancia de la vista "CatalogoProductosView"
@@ -49,6 +51,21 @@ namespace TFG
 
             // Agrega la vista "CategoriasView" al área de contenido principal
             contenidoPrincipal.Content = categoriasView;
+        }
+
+        private void SeguimientoPedidos(object sender, RoutedEventArgs e)
+        {
+            // Crea una instancia de la vista "SeguimientoPedidoView"
+            var seguimientoView = new SeguimientoPedidos.SeguimientoPedidosControl();
+
+            // Obtén una referencia al ContentControl del área de contenido principal
+            ContentControl contenidoPrincipal = (ContentControl)FindName("ContenidoPrincipal");
+
+            // Limpia cualquier contenido anterior en el área de contenido principal
+            contenidoPrincipal.Content = null;
+
+            // Agrega la vista "CategoriasView" al área de contenido principal
+            contenidoPrincipal.Content = seguimientoView;
         }
 
 
