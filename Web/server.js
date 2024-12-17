@@ -96,7 +96,7 @@ app.get('/cliente/:correo', (req, res) => {
         }
     });
 });
-// Ruta para crear un nuevo pedido
+
 app.post('/pedidos', async (req, res) => {
     console.log('Solicitud recibida:', req.body);
     const { pedido, detallesPedido } = req.body;
@@ -246,28 +246,51 @@ app.post('/pedidos', async (req, res) => {
 
                 console.log('Pedido insertado con ID:', nuevoIdPedido); // Imprimir el ID del pedido insertado
 
-                // Continuar con la inserción de detalles del pedido...
+                // Insertar detalles del pedido
                 for (const detalle of detallesConIds) {
                     console.log('Insertando detalle:', {
                         pedidoId: nuevoIdPedido,
                         productoId: detalle.productoId,
                         cantidad: detalle.cantidad
                     });
-                    // Inserción de detalles aquí...
+
+                    try {
+                        // Insertar el detalle en la tabla detalle_pedido
+                        await new Promise((resolve, reject) => {
+                            const sqlDetalle = 'INSERT INTO detalle_pedido (PedidoId, ProductoId, Cantidad) VALUES (?, ?, ?)';
+                            conexion.query(sqlDetalle, [nuevoIdPedido, detalle.productoId, detalle.cantidad], (err, result) => {
+                                if (err) {
+                                    console.error('Error al insertar detalle:', err);
+                                    return reject(err);
+                                }
+                                resolve(result);
+                            });
+                        });
+                    } catch (error) {
+                        console.error('Error al insertar detalle:', error);
+                        // Revertir la transacción si hay un error al insertar un detalle
+                        return conexion.rollback(() => {
+                            res.status(500).json({ error: 'Error al procesar la solicitud de pedido.' });
+                        });
+                    }
                 }
 
                 // Confirmar la transacción
                 conexion.commit((err) => {
                     if (err) {
                         console.error('Error al confirmar la transacción:', err);
-                        return res.status(500).json({ error: 'Error al procesar la solicitud de pedido.' });
+                        return conexion.rollback(() => {
+                            res.status(500).json({ error: 'Error al procesar la solicitud de pedido.' });
+                        });
                     }
                     console.log('Transacción completada con éxito.');
                     res.status(201).json({ message: 'Pedido creado con éxito.' });
                 });
             } catch (error) {
                 console.error('Error durante la transacción:', error);
-                return res.status(500).json({ error: 'Error al procesar la solicitud de pedido.' });
+                return conexion.rollback(() => {
+                    res.status(500).json({ error: 'Error al procesar la solicitud de pedido.' });
+                });
             }
         });
     } catch (error) {
@@ -275,6 +298,7 @@ app.post('/pedidos', async (req, res) => {
         return res.status(500).json({ error: 'Error al procesar la solicitud de pedido.' });
     }
 });
+
 
 
 
