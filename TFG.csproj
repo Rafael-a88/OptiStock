@@ -120,6 +120,11 @@
       <DependentUpon>Nominas.xaml</DependentUpon>
     </Compile>
     <Compile Include="Nominas\Trabajadores.cs" />
+    <Compile Include="StringToVisibilityConverter.cs" />
+    <Compile Include="Ventas\NuevaVentaView.xaml.cs">
+      <DependentUpon>NuevaVentaView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ventas\Venta.cs" />
     <Compile Include="SeguimientoPedidos\Class1.cs" />
     <Compile Include="SeguimientoPedidos\Detalle Pedidos.xaml.cs">
       <DependentUpon>Detalle Pedidos.xaml</DependentUpon>
@@ -133,6 +138,7 @@
     <Compile Include="SeguimientoPedidos\SeguimientoPedidos.xaml.cs">
       <DependentUpon>SeguimientoPedidos.xaml</DependentUpon>
     </Compile>
+
     <Page Include="CatalogoProductos\AgregarProductoView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -180,138 +186,4 @@
       <DependentUpon>DetallesProductoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="CatalogoProductos\ModificarProductoView.xaml.cs">
-      <DependentUpon>ModificarProductoView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CatalogoProductos\Producto.cs" />
-    <Compile Include="Categorias\AgregarCategoria.xaml.cs">
-      <DependentUpon>AgregarCategoria.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Categorias\Categoria.cs" />
-    <Compile Include="Categorias\CategoriasView.xaml.cs">
-      <DependentUpon>CategoriasView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Categorias\DetallesCategoriaView.xaml.cs">
-      <DependentUpon>DetallesCategoriaView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Conexion.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="Nominas\Nominas.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Principal.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SeguimientoPedidos\Detalle Pedidos.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SeguimientoPedidos\PreparacionPedidos.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SeguimientoPedidos\SeguimientoPedidos.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Principal.xaml.cs">
-      <DependentUpon>Principal.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Imagenes\Optistock.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Imagenes\OptiStockLogo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Imagenes\ImagenesProductos\Alimentacion\alpro.png" />
-    <Resource Include="Imagenes\ImagenesProductos\Alimentacion\bebidaalpro.png" />
-    <Resource Include="Imagenes\ImagenesProductos\Alimentacion\Lanjaron.png" />
-    <Resource Include="Imagenes\ImagenesProductos\Alimentacion\Pack 12 cocacolas.png" />
-    <Resource Include="Imagenes\ImagenesProductos\Alimentacion\Tonica.png" />
-    <Resource Include="Imagenes\ImagenesProductos\Alimentacion\Vinotinto.png" />
-    <Resource Include="Imagenes\ImagenesProductos\Bazar\altavoz.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Bazar\auricular.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Bazar\cablenegro.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Bazar\cableusb.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Bazar\pilas.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Bazar\pilas2.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Decoracion\estanteria.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Decoracion\jarron.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Decoracion\Plato.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Decoracion\portavela.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Decoracion\vela.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Decoracion\zapatilla.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Disfraz\baltasar.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Disfraz\chistera.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Disfraz\gaspar.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Disfraz\melchor.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Disfraz\pajebaltasar.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Disfraz\pajegazpar.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Disfraz\pajemelchor.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Hogar\cestobambu.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Hogar\dispensador.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Hogar\espejo.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Hogar\organizador.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Hogar\papelera.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Hogar\portarollos.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Hosteleria\Bandeja Bambu 30x30cm.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Hosteleria\CACEROLA 22CM ELITE TAPA VIDRIO.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Hosteleria\ESCURREPLATOS NATURAL.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Hosteleria\Molde 24cm.png" />
-    <Resource Include="Imagenes\ImagenesProductos\Hosteleria\Molde tarta redonda 28cm.png" />
-    <Resource Include="Imagenes\ImagenesProductos\Hosteleria\PORTARROLLOS BAMBU 12.5X31.5CM.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Hosteleria\Tabla Cortar 37x25cm.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Juguetes\amarillo.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Juguetes\azul.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Juguetes\cerdito.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Juguetes\gallo.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Juguetes\rojo.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Juguetes\stick.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Navidad\castillo.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Navidad\corona.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Navidad\decoracion.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Navidad\muñeco.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Navidad\niñas.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Navidad\peluchereno.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Papeleria\AGENDA.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Papeleria\boligrafo.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Papeleria\lamelarosa.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Papeleria\mochilamario.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Papeleria\mochilavaina.jpeg" />
-    <Resource Include="Imagenes\ImagenesProductos\Papeleria\portatodotriple.jpeg" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-</Project>
+      <DependentUpon>ModificarProductoView.xaml</Depen

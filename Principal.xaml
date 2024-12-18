@@ -67,7 +67,7 @@
                     <!-- Ventas -->
                     <GroupBox Header="Ventas" Margin="0,5">
                         <StackPanel>
-                            <Button Content="Nueva Venta" Margin="5"/>
+                            <Button Content="Nueva Venta" Margin="5" Click="NuevaVenta_Click"/>
                             <Button Content="Historial de Ventas" Margin="5"/>
                             <Button Content="Devoluciones" Margin="5"/>
                             <Button Content="Facturación" Margin="5"/>
