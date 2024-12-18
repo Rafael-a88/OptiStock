@@ -40,7 +40,9 @@ namespace TFG
         private void NuevaVenta_Click(object sender, RoutedEventArgs e)
         {
             NuevaVentaView nuevaVentaView = new NuevaVentaView();
-            ContenidoPrincipal.Content = nuevaVentaView;
+            ContentControl contenidoPrincipal = (ContentControl)FindName("ContenidoPrincipal");
+            contenidoPrincipal.Content = null;
+            contenidoPrincipal.Content = nuevaVentaView;
         }
 
         private void SeguimientoPedidos(object sender, RoutedEventArgs e)

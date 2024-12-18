@@ -27,8 +27,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <!-- Convertidor para visibilidad del placeholder -->
-        <local:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+      
     </UserControl.Resources>
 
     <Grid Background="SkyBlue" Margin="0">
@@ -83,7 +82,7 @@
                                    VerticalAlignment="Center"
                                    Margin="5,0,0,0"
                                    IsHitTestVisible="False"
-                                   Visibility="{Binding Text, ElementName=DniClienteTextBox, Converter={StaticResource StringToVisibilityConverter}}"/>
+                                   Visibility="{Binding Text, ElementName=DniClienteTextBox}"/>
                     </Grid>
                 </StackPanel>
 
