@@ -50,7 +50,14 @@ namespace TFG
             // Agrega la vista "CategoriasView" al área de contenido principal
             contenidoPrincipal.Content = categoriasView;
         }
+        private void NuevaVenta_Click(object sender, RoutedEventArgs e)
+        {
+            // Crear una instancia de NuevaVentaView
+            NuevaVentaView nuevaVentaView = new NuevaVentaView();
 
+            // Asignar la vista al ContentControl
+            ContenidoPrincipal.Content = nuevaVentaView;
+        }
 
         private void ChangeBackgroundColor(object sender, RoutedEventArgs e)
         {
