@@ -35,9 +35,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
-      <HintPath>packages\BouncyCastle.Cryptography.2.4.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
-    </Reference>
     <Reference Include="EPPlus, Version=7.5.1.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
       <HintPath>packages\EPPlus.7.5.1\lib\net462\EPPlus.dll</HintPath>
     </Reference>
@@ -46,9 +43,6 @@
     </Reference>
     <Reference Include="EPPlus.System.Drawing, Version=7.5.0.0, Culture=neutral, PublicKeyToken=2308d35469c9bac0, processorArchitecture=MSIL">
       <HintPath>packages\EPPlus.System.Drawing.7.5.0\lib\net462\EPPlus.System.Drawing.dll</HintPath>
-    </Reference>
-    <Reference Include="itextsharp, Version=5.5.13.4, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>packages\iTextSharp.5.5.13.4\lib\net461\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -116,15 +110,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Nominas\Nominas.xaml.cs">
-      <DependentUpon>Nominas.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Nominas\Trabajadores.cs" />
+
+    <!-- Archivos de Antonio1 -->
     <Compile Include="StringToVisibilityConverter.cs" />
     <Compile Include="Ventas\NuevaVentaView.xaml.cs">
       <DependentUpon>NuevaVentaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ventas\Venta.cs" />
+
+    <!-- Archivos de master -->
     <Compile Include="SeguimientoPedidos\Class1.cs" />
     <Compile Include="SeguimientoPedidos\Detalle Pedidos.xaml.cs">
       <DependentUpon>Detalle Pedidos.xaml</DependentUpon>
@@ -186,4 +180,82 @@
       <DependentUpon>DetallesProductoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="CatalogoProductos\ModificarProductoView.xaml.cs">
-      <DependentUpon>ModificarProductoView.xaml</Depen
+      <DependentUpon>ModificarProductoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CatalogoProductos\Producto.cs" />
+    <Compile Include="Categorias\AgregarCategoria.xaml.cs">
+      <DependentUpon>AgregarCategoria.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Categorias\Categoria.cs" />
+    <Compile Include="Categorias\CategoriasView.xaml.cs">
+      <DependentUpon>CategoriasView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Categorias\DetallesCategoriaView.xaml.cs">
+      <DependentUpon>DetallesCategoriaView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Conexion.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Principal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    
+    <!-- Archivos de Antonio1 -->
+    <Page Include="Ventas\NuevaVentaView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+
+    <!-- Archivos de master -->
+    <Page Include="SeguimientoPedidos\Detalle Pedidos.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SeguimientoPedidos\PreparacionPedidos.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SeguimientoPedidos\SeguimientoPedidos.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Principal.xaml.cs">
+      <DependentUpon>Principal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Imagenes\Optistock.png" />
+    <Resource Include="Imagenes\OptiStockLogo.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
