@@ -68,6 +68,21 @@ namespace TFG
             contenidoPrincipal.Content = seguimientoView;
         }
 
+        private void MostrarNominas(object sender, RoutedEventArgs e)
+        {
+            // Crea una instancia de la vista "Nominas"
+            Nominas.Nominas nominasView = new Nominas.Nominas();
+
+            // Obtén una referencia al ContentControl del área de contenido principal
+            ContentControl contenidoPrincipal = (ContentControl)FindName("ContenidoPrincipal");
+
+            // Limpia cualquier contenido anterior en el área de contenido principal
+            contenidoPrincipal.Content = null;
+
+            // Agrega la vista "Nominas" al área de contenido principal
+            contenidoPrincipal.Content = nominasView;
+
+        }
 
         private void ChangeBackgroundColor(object sender, RoutedEventArgs e)
         {
