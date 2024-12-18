@@ -97,7 +97,7 @@
                         <StackPanel>
                             <Button Content="Empleados" Margin="5"/>
                             <Button Content="Turnos y Horarios" Margin="5"/>
-                            <Button Content="Nóminas" Margin="5"/>
+                            <Button Content="Nóminas" Margin="5" Click="MostrarNominas"/>
                             <Button Content="Permisos y Vacaciones" Margin="5"/>
                         </StackPanel>
                     </GroupBox>
