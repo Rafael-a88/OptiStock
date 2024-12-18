@@ -1,0 +1,60 @@
+body {
+    background-color: #e2e6d181;
+}
+
+.navbar-brand {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.navbar-nav {
+    margin: 0 auto;
+    gap: 1rem;
+    margin-right: 10px; /* Mueve los elementos a la derecha */
+}
+
+.carousel-item img {
+    height: 400px; /* Ajusta el valor según tus preferencias */
+    object-fit: cover;
+}
+
+.jumbotron {
+    height: 22vh;
+}
+
+.product-card {
+    margin: 15px;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra todos los elementos dentro del card-body */
+}
+
+.card-body a {
+    margin-top: auto;
+}
+
+.product-card img {
+    width: 100%; /* Asegura que la imagen ocupe todo el ancho del contenedor */
+    height: 250px; /* Mantiene la proporción de la imagen */
+    object-fit: contain; /* Ajusta la imagen sin recortarla */
+    transition: transform 1.5s ease; /* Transición suave */
+}
+
+.product-card img:hover {
+    transform: scale(1.10); /* Aumenta la imagen al pasar el mouse */
+}
+
+
+
+@media (min-width: 1600px) {
+    .container {
+        width: 75%; /* Ajusta el ancho del contenedor en pantallas grandes */
+    }
+
+    .carousel-item {
+        padding-top: 5%;
+    }
+}

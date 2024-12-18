@@ -55,8 +55,8 @@ namespace TFG
         {
             // Abre un cuadro de diálogo para seleccionar una imagen
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.DefaultExt = ".png"; // Especifica la extensión por defecto
-            dlg.Filter = "Imagenes PNG (*.png)|*.png|Imagenes JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg"; // Filtros de archivo
+            dlg.DefaultExt = ".png;jpg,jpeg"; // Especifica la extensión por defecto
+            dlg.Filter = "Imagenes (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg"; // Filtros de archivo
 
             // Muestra el cuadro de diálogo y espera a que el usuario seleccione un archivo
             bool? result = dlg.ShowDialog();

@@ -75,10 +75,10 @@
         <TextBlock Text="Categorías" FontSize="24" FontWeight="Bold" Margin="50,20,0,0" HorizontalAlignment="Left"/>
 
         <!-- Parte derecha: ListView -->
-        <ListView x:Name="CategoriasListView" Margin="500,110,450,220" Width="340" MouseDoubleClick="CategoriasListView_MouseDoubleClick" Background="Linen">
+        <ListView x:Name="CategoriasListView" Margin="500,110,450,220" Width="350" MouseDoubleClick="CategoriasListView_MouseDoubleClick" Background="Linen">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Width="130">
+                    <GridViewColumn Width="120">
                         <GridViewColumn.Header>
                             <TextBlock Text="ID" Tag="Id" MouseDown="Header_Click" HorizontalAlignment="Center"/>
                         </GridViewColumn.Header>
@@ -109,6 +109,10 @@
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                     <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="Margin" Value="4"/>
+                    <Setter Property="Background" Value="Linen"/>
+                    <Setter Property="BorderBrush" Value="Blue"/>
+                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>

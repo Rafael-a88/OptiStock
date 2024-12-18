@@ -1,0 +1,66 @@
+body {
+    background-color: #8ca4bb;
+}
+.container {
+    background-color: #e5e4d6ba; /* Cambia este color según tus preferencias */
+    padding: 20px;
+    border-radius: 5px;
+    width: 25%;
+}
+.form-group {
+    margin-bottom: 20px; /* Espacio entre los formularios */
+}
+#segundoformulario {
+    margin: 0 auto;
+}
+.logo {
+    width: 150px; /* Ajusta el tamaño del logo según sea necesario */
+    height: auto;
+    margin-left: 45px;
+    margin-top: 20px;
+    border-radius: 10%;
+}
+.jumbotron {
+    position: relative; /* Posicionamiento relativo para el logo */
+    text-align: center; /* Centra el texto */
+    padding-top: 60px; /* Espacio superior para centrar verticalmente el texto */
+    height: auto;
+}
+.jumbotron .logo {
+    position: absolute; /* Posiciona el logo de forma absoluta */
+    top: 10px; /* Espacio desde la parte superior */
+    left: 10px; /* Espacio desde la izquierda */
+}
+.jumbotron h1, .jumbotron p {
+    position: relative; /* Mantiene el texto en su posición normal */
+    z-index: 1; /* Asegura que el texto esté por encima del logo */
+}
+@media (max-width: 576px) {
+    .jumbotron {
+        display: flex;
+        flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+        align-items: center; /* Centra elementos horizontalmente */
+        padding: 20px; /* Espacio alrededor */
+    }
+    .jumbotron .logo {
+        order: 1; /* Logo primero */
+        position: static; /* Cambia a posición estática */
+        margin: 0; /* Elimina márgenes */
+    }
+    .jumbotron h1 {
+        order: 2; /* Título segundo */
+        margin: 10px 0; /* Espacio entre título y logo */
+    }
+    .jumbotron p {
+        order: 3; /* Descripción tercero */
+        margin: 10px 0; /* Espacio entre descripción y título */
+    }
+    #segundoformulario {
+        order: 4; /* Formulario último */
+        width: 100%; /* Ancho completo en móviles */
+    }
+    .container{
+        width: 70%;
+       
+    }
+}

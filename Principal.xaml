@@ -107,7 +107,7 @@
                         <StackPanel>
                             <Button Content="Gestión de Envíos" Margin="5"/>
                             <Button Content="Rutas de Distribución" Margin="5"/>
-                            <Button Content="Seguimiento de Pedidos" Margin="5"/>
+                            <Button Content="Seguimiento de Pedidos" Margin="5" Click="SeguimientoPedidos"/>
                         </StackPanel>
                     </GroupBox>
 
@@ -144,7 +144,10 @@
             </ScrollViewer>
 
             <!-- Área de contenido principal -->
-            <ContentControl x:Name="ContenidoPrincipal" Grid.Column="1" Background="MediumAquamarine"/>
+            <ContentControl x:Name="ContenidoPrincipal" Grid.Column="1" Background="MediumAquamarine">
+                <Image Source="Imagenes/OptiStock.png" Stretch="Fill" Margin="0" />
+            </ContentControl>
+
         </Grid>
 
         <!-- Barra de estado inferior -->

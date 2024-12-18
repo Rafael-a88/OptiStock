@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OptiStock - Bazar</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css"> 
+</head>
+<body>
+    <script>
+        function addToCart(productName, productPrice) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let productIndex = cart.findIndex(item => item.name === productName);
+
+            if (productIndex !== -1) {
+                cart[productIndex].quantity++;
+            } else {
+                cart.push({ name: productName, price: productPrice, quantity: 1 });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert('Producto añadido al carrito'); 
+        }
+    </script>
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="index.html">OptiStock</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="Alimentacion.html">Alimentación</a></li>
+                <li class="nav-item"><a class="nav-link" href="Bazar.html">Bazar</a></li>
+                <li class="nav-item"><a class="nav-link" href="Decoracion.html">Decoración</a></li>
+                <li class="nav-item"><a class="nav-link" href="Disfraces.html">Disfraces</a></li>
+                <li class="nav-item"><a class="nav-link" href="HogaryBaño.html">Hogar y Baño</a></li>
+                <li class="nav-item"><a class="nav-link" href="Hosteleria.html">Hostelería</a></li>
+                <li class="nav-item"><a class="nav-link" href="Juguetes.html">Juguetes</a></li>
+                <li class="nav-item"><a class="nav-link" href="Navidad.html">Navidad</a></li>
+                <li class="nav-item"><a class="nav-link" href="Papeleria.html">Papelería</a></li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0 ml-auto" onsubmit="return searchProduct(event)">
+                <input class="form-control mr-sm-2" type="search" id="searchInput" placeholder="¿Qué estás buscando?" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+                <a href="Carrito.html" class="btn btn-outline-primary my-2 my-sm-0 ml-2">Ir al Carrito</a>
+            </form>
+        </div>
+    </nav>
+
+    <div class="jumbotron jumbotron-fluid d-flex justify-content-center align-items-center bg-primary">
+        <div class="container text-center">
+            <h1 class="display-4">Bazar</h1>
+            <p class="lead">Artículos variados para el hogar y más.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Producto 1 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Bazar/cableusb.jpeg" class="card-img-top" alt="Cable Cargador USB Tipo iPhone">
+                    <div class="card-body">
+                        <h5 class="card-title">Cable Cargador USB Tipo iPhone Surtido</h5>
+                        <p class="card-text">Cable cargador USB tipo iPhone surtido, compatible con varios modelos.</p>
+                        <p class="card-price"><strong>Precio: 1.15€</strong></p>
+                        <button onclick="addToCart('Cable Cargador USB Tipo iPhone Surtido', 1.15)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Producto 2 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Bazar/pilas.jpeg" class="card-img-top" alt="Pila Varta Energy">
+                    <div class="card-body">
+                        <h5 class="card-title">Pila Alcalina Energy AA 4U Pro Power Varta.</h5>
+                        <p class="card-text">Pack de 4 pilas Varta Energy AA, duraderas y de alta calidad.</p>
+                        <p class="card-price"><strong>Precio: 1.68€</strong></p>
+                        <button onclick="addToCart('Pila Alcalina Energy AA 4U Pro Power Varta', 1.68)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Producto 3 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Bazar/pilas2.jpeg" class="card-img-top" alt="Pila Alcalina Panasonic">
+                    <div class="card-body">
+                        <h5 class="card-title">Pila Alcalina 4U. AAA LR03 Pro Power Panasonic</h5>
+                        <p class="card-text">Pack de 4 pilas alcalinas AAA LR03 Pro Power de Panasonic.</p>
+                        <p class="card-price"><strong>Precio: 1.26€</strong></p>
+                        <button onclick="addToCart('Pila Alcalina 4U. AAA LR03 Pro Power Panasonic', 1.26)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Producto 4 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Bazar/altavoz.jpeg" class="card-img-top" alt="Altavoz Bluetooth">
+                    <div class="card-body">
+                        <h5 class="card-title">Altavoz Bluetooth 21,5x6,9x11,7cm</h5>
+                        <p class="card-text">Altavoz Bluetooth compacto, ideal para llevar a todas partes.</p>
+                        <p class="card-price"><strong>Precio: 12.35€</strong></p>
+                        <button onclick="addToCart('Altavoz Bluetooth 21,5x6,9x11,7cm', 12.35)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Producto 5 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Bazar/auricular.jpeg" class="card-img-top" alt="Auriculares HAVIT">
+                    <div class="card-body">
+                        <h5 class="card-title">Auricular C/Cable Manos Libres HAVIT</h5>
+                        <p class="card-text">Auriculares con cable y manos libres, sonido de alta calidad.</p>
+                        <p class="card-price"><strong>Precio: 4.5€</strong></p>
+                        <button onclick="addToCart('Auricular C/Cable Manos Libres HAVIT', 4.5)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Producto 6 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Bazar/cablenegro.jpeg" class="card-img-top" alt="Cable USB 2.0">
+                    <div class="card-body">
+                        <h5 class="card-title">Cable USB 2.0 A - Micro Negro 1m</h5>
+                        <p class="card-text">Cable USB 2.0 tipo A a Micro USB, longitud de 1 metro.</p>
+                        <p class="card-price"><strong>Precio: 3.05€</strong></p>
+                        <button onclick="addToCart('Cable USB 2.0 A - Micro Negro 1m', 3.05)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    <script src="cart.js"></script>
+    <script src="search.js"></script>
+</body>
+</html>

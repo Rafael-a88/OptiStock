@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OptiStock - Hostelería</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css"> 
+</head>
+<body>
+
+    <script>
+        function addToCart(productName, productPrice) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let productIndex = cart.findIndex(item => item.name === productName);
+
+            if (productIndex !== -1) {
+                cart[productIndex].quantity++;
+            } else {
+                cart.push({ name: productName, price: productPrice, quantity: 1 });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert('Producto añadido al carrito'); 
+        }
+    </script>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="index.html">OptiStock</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="Alimentacion.html">Alimentación</a></li>
+                <li class="nav-item"><a class="nav-link" href="Bazar.html">Bazar</a></li>
+                <li class="nav-item"><a class="nav-link" href="Decoracion.html">Decoración</a></li>
+                <li class="nav-item"><a class="nav-link" href="Disfraces.html">Disfraces</a></li>
+                <li class="nav-item"><a class="nav-link" href="HogaryBaño.html">Hogar y Baño</a></li>
+                <li class="nav-item"><a class="nav-link" href="Hosteleria.html">Hostelería</a></li>
+                <li class="nav-item"><a class="nav-link" href="Juguetes.html">Juguetes</a></li>
+                <li class="nav-item"><a class="nav-link" href="Navidad.html">Navidad</a></li>
+                <li class="nav-item"><a class="nav-link" href="Papeleria.html">Papelería</a></li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0 ml-auto" onsubmit="return searchProduct(event)">
+                <input class="form-control mr-sm-2" type="search" id="searchInput" placeholder="¿Qué estás buscando?" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+                <a href="Carrito.html" class="btn btn-outline-primary my-2 my-sm-0 ml-2">Ir al Carrito</a>
+            </form>
+        </div>
+    </nav>
+
+    <div class="jumbotron jumbotron-fluid d-flex justify-content-center align-items-center bg-primary">
+        <div class="container text-center">
+            <h1 class="display-4">Hostelería</h1>
+            <p class="lead">Todo lo necesario para un servicio excepcional.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Producto 1 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Hosteleria/Molde tarta redonda 28cm.png" class="card-img-top" alt="molde28cm">
+                    <div class="card-body">
+                        <h5 class="card-title">Molde Tarta Redonda 28cm</h5>
+                        <p class="card-text">Molde de tarta redonda de 28 cm, fabricado en material antiadherente.</p>
+                        <p class="card-price"><strong>Precio: 18.15€</strong></p>
+                        <button onclick="addToCart('Molde Tarta Redonda 28cm', 18.15)" class="btn btn-primary">Añadir al carrito</button> 
+                    </div>
+                </div>
+            </div>
+            <!-- Producto 2 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Hosteleria/Tabla Cortar 37x25cm.jpeg" class="card-img-top" alt="tabla">
+                    <div class="card-body">
+                        <h5 class="card-title">Tabla Cortar 37x25cm</h5>
+                        <p class="card-text">Tabla de cortar de 37x25 cm, ideal para preparar alimentos.</p>
+                        <p class="card-price"><strong>Precio: 12.10€</strong></p> 
+                        <button onclick="addToCart('Tabla Cortar 37x25cm', 12.10)" class="btn btn-primary">Añadir al carrito</button> 
+                    </div>
+                </div>
+            </div>
+            <!-- Producto 3 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Hosteleria/Molde 24cm.png" class="card-img-top" alt="molde24cm">
+                    <div class="card-body">
+                        <h5 class="card-title">Molde Tarta Redonda 24cm</h5>
+                        <p class="card-text">Molde de tarta redonda de 24 cm, fabricado en material antiadherente.</p>
+                        <p class="card-price"><strong>Precio: 14.52€</strong></p> 
+                        <button onclick="addToCart('Molde Tarta Redonda 24cm', 14.52)" class="btn btn-primary">Añadir al carrito</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Producto 4 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Hosteleria/Bandeja Bambu 30x30cm.jpeg" class="card-img-top" alt="bandejabambu">
+                    <div class="card-body">
+                        <h5 class="card-title">Bandeja Bambu 30x30cm</h5>
+                        <p class="card-text">Bandeja de bambú de 30x30 cm, perfecta para servir.</p>
+                        <p class="card-price"><strong>Precio: 24.20€</strong></p>
+                        <button onclick="addToCart('Bandeja Bambu 30x30cm', 24.20)" class="btn btn-primary">Añadir al carrito</button> 
+
+                    </div>
+                </div>
+            </div>
+            <!-- Producto 5 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Hosteleria/PORTARROLLOS BAMBU 12.5X31.5CM.jpeg" class="card-img-top" alt="portarollos">
+                    <div class="card-body">
+                        <h5 class="card-title">Portarollos Bambu 12.5x31.5cm</h5>
+                        <p class="card-text">Portarollos de bambú de 12.5x31.5 cm, elegante y funcional.</p>
+                        <p class="card-price"><strong>Precio: 9.68€</strong></p> 
+                        <button onclick="addToCart('Portarollos Bambu 12.5x31.5cm', 9.68)" class="btn btn-primary">Añadir al carrito</button> 
+                    </div>
+                </div>
+            </div>
+            <!-- Producto 6 -->
+            <div class="col-md-4 product-card mx-auto">
+                <div class="card">
+                    <img src="ImagenProductos/Hosteleria/CACEROLA 22CM ELITE TAPA VIDRIO.jpeg" class="card-img-top" alt="cacerola">
+                    <div class="card-body">
+                        <h5 class="card-title">Cacerola 22cm Elite C/Tapa Vidrio</h5>
+                        <p class="card-text">Cacerola de 22 cm con tapa de vidrio, ideal para cocinar.</p>
+                        <p class="card-price"><strong>Precio: 30.25€</strong></p>    
+                        <button onclick="addToCart('Cacerola 22cm Elite C/Tapa Vidrio', 30.25)" class="btn btn-primary">Añadir al carrito</button> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    <script src="cart.js"></script>
+    <script src="search.js"></script>
+</body>
+</html>

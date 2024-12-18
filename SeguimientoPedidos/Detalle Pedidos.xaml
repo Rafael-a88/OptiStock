@@ -1,0 +1,110 @@
+﻿<Window x:Class="TFG.SeguimientoPedidos.Detalle_Pedidos"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TFG.SeguimientoPedidos"
+        mc:Ignorable="d"
+        Title="Detalle_Pedidos" Height="500" Width="600">
+    <Grid>
+        <StackPanel Margin="20">
+            <!-- Definición del Grid para las etiquetas y valores -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock FontWeight="Bold" FontSize="20" Text="{Binding NumeroPedido}" Grid.ColumnSpan="2" HorizontalAlignment="Center"/>
+            </Grid>
+
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="ID:  " FontWeight="Bold" FontSize="14"/>
+                <TextBlock Text="{Binding Id}" Grid.Column="1" FontSize="14"/>
+            </Grid>
+
+
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Cliente Web ID:  " FontWeight="Bold" FontSize="14"/>
+                <TextBlock Text="{Binding ClienteWebId}" Grid.Column="1" FontSize="14"/>
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Nombre Cliente:  " FontWeight="Bold" FontSize="14"/>
+                <TextBlock Text="{Binding NombreCliente}" Grid.Column="1" FontSize="14"/>
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Apellido Cliente:  " FontWeight="Bold" FontSize="14"/>
+                <TextBlock Text="{Binding ApellidoCliente}" Grid.Column="1" FontSize="14"/>
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Dirección Cliente:  " FontWeight="Bold" FontSize="14"/>
+                <TextBlock Text="{Binding DireccionCliente}" Grid.Column="1" FontSize="14"/>
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Ciudad Cliente:  " FontWeight="Bold" FontSize="14"/>
+                <TextBlock Text="{Binding CiudadCliente}" Grid.Column="1" FontSize="14"/>
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Precio PVP:  " FontWeight="Bold" FontSize="14"/>
+                <TextBlock Text="{Binding PrecioTotal, StringFormat={}{0:N2}€}" Grid.Column="1" FontSize="14"/>
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Fecha Pedido:  " FontWeight="Bold" FontSize="14"/>
+                <TextBlock Text="{Binding FechaPedido, StringFormat={}{0:dd/MM/yyyy}}" Grid.Column="1" FontSize="14"/>
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Estado:  " FontWeight="Bold" FontSize="14"/>
+                <TextBlock Text="{Binding Estado}" Grid.Column="1" FontSize="14"/>
+            </Grid>
+
+            <Button Content="Preparar Productos" Width="150" HorizontalAlignment="Center" Margin="0,120,0,0" Click="PrepararProductos_Click"/>
+        </StackPanel>
+        
+        
+
+    </Grid>
+</Window>
