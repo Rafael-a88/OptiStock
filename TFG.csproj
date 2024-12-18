@@ -110,6 +110,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <!-- Archivos de Antonio1 -->
+    <Compile Include="StringToVisibilityConverter.cs" />
+    <Compile Include="Ventas\NuevaVentaView.xaml.cs">
+      <DependentUpon>NuevaVentaView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ventas\Venta.cs" />
+
+    <!-- Archivos de master -->
     <Compile Include="SeguimientoPedidos\Class1.cs" />
     <Compile Include="SeguimientoPedidos\Detalle Pedidos.xaml.cs">
       <DependentUpon>Detalle Pedidos.xaml</DependentUpon>
@@ -123,6 +131,7 @@
     <Compile Include="SeguimientoPedidos\SeguimientoPedidos.xaml.cs">
       <DependentUpon>SeguimientoPedidos.xaml</DependentUpon>
     </Compile>
+
     <Page Include="CatalogoProductos\AgregarProductoView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -192,6 +201,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    
+    <!-- Archivos de Antonio1 -->
+    <Page Include="Ventas\NuevaVentaView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+
+    <!-- Archivos de master -->
     <Page Include="SeguimientoPedidos\Detalle Pedidos.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -237,8 +254,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Imagenes\Optistock.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Imagenes\OptiStockLogo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

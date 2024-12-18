@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,10 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-
 namespace TFG
 {
-    
     public partial class Principal : Window
     {
         public Principal()
@@ -53,6 +51,15 @@ namespace TFG
             contenidoPrincipal.Content = categoriasView;
         }
 
+        private void NuevaVenta_Click(object sender, RoutedEventArgs e)
+        {
+            // Crear una instancia de NuevaVentaView
+            NuevaVentaView nuevaVentaView = new NuevaVentaView();
+
+            // Asignar la vista al ContentControl
+            ContenidoPrincipal.Content = nuevaVentaView;
+        }
+
         private void SeguimientoPedidos(object sender, RoutedEventArgs e)
         {
             // Crea una instancia de la vista "SeguimientoPedidoView"
@@ -64,10 +71,9 @@ namespace TFG
             // Limpia cualquier contenido anterior en el área de contenido principal
             contenidoPrincipal.Content = null;
 
-            // Agrega la vista "CategoriasView" al área de contenido principal
+            // Agrega la vista "SeguimientoPedidosControl" al área de contenido principal
             contenidoPrincipal.Content = seguimientoView;
         }
-
 
         private void ChangeBackgroundColor(object sender, RoutedEventArgs e)
         {
@@ -81,7 +87,5 @@ namespace TFG
                 ContenidoPrincipal.Background = color;
             }
         }
-
-
     }
 }
