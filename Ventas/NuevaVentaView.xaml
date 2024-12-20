@@ -27,8 +27,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <!-- Convertidor para visibilidad del placeholder -->
-        <local:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        
     </UserControl.Resources>
 
     <Grid Background="SkyBlue" Margin="0">
@@ -42,10 +41,10 @@
         <TextBlock Text="Ventas" FontSize="28" FontWeight="Bold" Margin="100,50,50,50" Grid.Row="0" Foreground="Navy"/>
 
         <!-- Contenido principal -->
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Margin="40,0,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="700"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <!-- Columna izquierda: Lista de productos a vender -->
@@ -53,45 +52,44 @@
                 <TextBlock Text="Lista de Productos a Vender" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
                 <DataGrid x:Name="ProductosDataGrid" AutoGenerateColumns="False" Height="300" Margin="0,0,0,20">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Código" Binding="{Binding Codigo}" Width="Auto"/>
+                        <DataGridTextColumn Header="Código" Binding="{Binding ProductoId}" Width="100"/>
                         <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*"/>
                         <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="Auto"/>
-                        <DataGridTextColumn Header="Valor Unit." Binding="{Binding ValorUnitario}" Width="Auto"/>
-                        <DataGridTextColumn Header="Valor Total" Binding="{Binding ValorTotal}" Width="Auto"/>
+                        <DataGridTextColumn Header="Valor Unit." Binding="{Binding ValorUnitario, StringFormat={}{0:F2} €}" Width="Auto"/>
+                        <DataGridTextColumn Header="Valor Total" Binding="{Binding Subtotal, StringFormat={}{0:F2} €}" Width="Auto"/>
                     </DataGrid.Columns>
                 </DataGrid>
 
                 <!-- Agregar producto -->
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,10">
-                    <TextBlock Text="Código Producto:" VerticalAlignment="Center" FontSize="16" Width="150"/>
+                    <TextBlock Text="Código EAN o Referencia:" VerticalAlignment="Center" FontSize="16" Width="200"/>
                     <TextBox x:Name="CodigoProductoTextBox" Width="200"/>
-                    <TextBlock Text="Cantidad:" VerticalAlignment="Center" FontSize="16" Width="100" Margin="10,0,0,0"/>
-                    <TextBox x:Name="CantidadTextBox" Width="100"/>
-                    <Button Content="Agregar" Width="100" Height="30" Margin="10,0,0,0" Style="{StaticResource VentasButtonStyle}" Click="AgregarProducto_Click"/>
+        
                 </StackPanel>
             </StackPanel>
 
             <!-- Columna derecha: Información del cliente, total y acciones -->
-            <StackPanel Grid.Column="1" Margin="10">
+            <StackPanel Grid.Column="1" Margin="60">
                 <TextBlock Text="Información del Cliente" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
                 <StackPanel Orientation="Horizontal" Margin="0,10">
                     <TextBlock Text="DNI del Cliente:" VerticalAlignment="Center" FontSize="16" Width="150"/>
                     <Grid>
-                        <TextBox x:Name="DniClienteTextBox" Width="200"/>
-                        <TextBlock Text="12345678X"
+                        <TextBox x:Name="DniClienteTextBox" Width="200" GotFocus="DniClienteTextBox_GotFocus" LostFocus="DniClienteTextBox_LostFocus"/>
+                        <TextBlock x:Name="DniClienteTextBlockPlaceholder" Text="12345678X"
                                    Foreground="Gray"
                                    VerticalAlignment="Center"
                                    Margin="5,0,0,0"
                                    IsHitTestVisible="False"
-                                   Visibility="{Binding Text, ElementName=DniClienteTextBox, Converter={StaticResource StringToVisibilityConverter}}"/>
+                                   Visibility="{Binding Visibility, ElementName=DniClienteTextBlockPlaceholder}"/>
                     </Grid>
                 </StackPanel>
 
                 <TextBlock Text="Opciones de Facturación" FontSize="18" FontWeight="Bold" Margin="0,20,0,10"/>
-                <StackPanel Orientation="Horizontal" Margin="0,10">
-                    <CheckBox x:Name="TicketCheckBox" Content="Ticket" FontSize="16" Margin="10,0,20,0"/>
-                    <CheckBox x:Name="FacturaCheckBox" Content="Factura" FontSize="16"/>
+                <StackPanel Orientation="Horizontal" Margin="10">
+                    <RadioButton x:Name="TicketRadioButton" Content="Ticket" GroupName="TipoDocumento" IsChecked="True" Margin="5" FontSize="15"/>
+                    <RadioButton x:Name="FacturaRadioButton" Content="Factura" GroupName="TipoDocumento" Margin="5" FontSize="15"/>
                 </StackPanel>
+
 
                 <TextBlock Text="Resumen de Venta" FontSize="18" FontWeight="Bold" Margin="0,20,0,10"/>
                 <StackPanel Orientation="Horizontal" Margin="0,10">
