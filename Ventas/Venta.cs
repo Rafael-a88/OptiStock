@@ -8,21 +8,21 @@ namespace TFG
     {
         public int Id { get; set; } // Identificador único de la venta
         public DateTime Fecha { get; set; } // Fecha de la venta
-        public List<DetalleVenta> Detalles { get; set; } // Lista de detalles de la venta (productos)
+        public List<DVenta> Detalles { get; set; } // Lista de detalles de la venta (productos)
         public double Total { get; private set; } // Total calculado de la venta
 
         // Constructor
         public Venta()
         {
-            Detalles = new List<DetalleVenta>();
+            Detalles = new List<DVenta>();
             Fecha = DateTime.Now; // Fecha por defecto: ahora
         }
 
         // Constructor con parámetros
-        public Venta(int id, List<DetalleVenta> detalles = null)
+        public Venta(int id, List<DVenta> detalles = null)
         {
             Id = id;
-            Detalles = detalles ?? new List<DetalleVenta>();
+            Detalles = detalles ?? new List<DVenta>();
             Fecha = DateTime.Now;
             CalcularTotal();
         }
@@ -38,12 +38,12 @@ namespace TFG
         }
 
         // Método para agregar un producto a la venta
-        public void AgregarProducto(DetalleVenta detalle)
+        public void AgregarProducto(DVenta detalle)
         {
             if (detalle == null)
                 throw new ArgumentNullException(nameof(detalle), "El detalle no puede ser nulo.");
 
-            if (detalle.Cantidad <= 0 || detalle.PrecioUnitario < 0)
+            if (detalle.Cantidad <= 0 || detalle.ValorUnitario < 0)
                 throw new ArgumentException("Cantidad o precio inválido.");
 
             // Verifica si el producto ya existe en la lista de detalles
@@ -74,24 +74,22 @@ namespace TFG
     // Clase que representa un Detalle de Venta
     public class DVenta
     {
-        public int ProductoId { get; set; } // Identificador del producto
-        public string ProductoNombre { get; set; } // Nombre del producto
-        public double PrecioUnitario { get; set; } // Precio unitario del producto
-        public int Cantidad { get; set; } // Cantidad de productos vendidos
-        public double Subtotal => PrecioUnitario * Cantidad; // Subtotal calculado
+        public long ProductoId { get; set; } // EAN
+        public string Nombre { get; set; }
+        public int Cantidad { get; set; }
+        public double ValorUnitario { get; set; }
 
-        // Constructor
-        public DVenta(int productoId, string productoNombre, double precioUnitario, int cantidad)
+        // Propiedad que calcula el subtotal
+        public double Subtotal => Cantidad * ValorUnitario;
+
+
+        public DVenta(long productoId, string nombre, double valorUnitario, int cantidad)
         {
-            if (precioUnitario < 0)
-                throw new ArgumentException("El precio unitario no puede ser negativo.");
-            if (cantidad <= 0)
-                throw new ArgumentException("La cantidad debe ser mayor a cero.");
-
             ProductoId = productoId;
-            ProductoNombre = productoNombre;
-            PrecioUnitario = precioUnitario;
+            Nombre = nombre;
+            ValorUnitario = valorUnitario;
             Cantidad = cantidad;
         }
     }
+
 }

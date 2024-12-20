@@ -12,7 +12,7 @@ namespace TFG
         // Constructor
         public Conexion()
         {
-            string connectionString = "Server=localhost;Database=optistock;Uid=root;Pwd=;";
+            string connectionString = "Server=localhost;Database=optistock;Uid=root;Pwd=root;";
             connection = new MySqlConnection(connectionString);
         }
 
