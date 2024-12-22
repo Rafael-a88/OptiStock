@@ -9,13 +9,14 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using TFG.SeguimientoPedidos;
+using static iTextSharp.text.pdf.AcroFields;
+using System.util.zlib;
 
 namespace TFG
 {
     public partial class NuevaVentaView : UserControl
     {
-        private int TicketContador = 1;
-        private int FacturaContador = 1;
+       
         private List<DVenta> productosEnVenta = new List<DVenta>();
 
         // Constructor
@@ -130,6 +131,24 @@ namespace TFG
             BuscarProducto();
         }
 
+        // Metodo para ver si un usuario esta registrado en la empresa
+        private (bool esValido, string nombreCompleto) ValidarYObtenerNombreCliente(string dni)
+        {
+            using (var conexion = new Conexion())
+            {
+                conexion.AbrirConexion();
+                var command = new MySqlCommand("SELECT NombreCompleto FROM Clientes WHERE Dni = @dni", conexion.ObtenerConexion());
+                command.Parameters.AddWithValue("@dni", dni);
+
+                var nombreCompleto = command.ExecuteScalar()?.ToString();
+
+                // Retornar tupla: (esValido, nombreCompleto)
+                return (nombreCompleto != null, nombreCompleto ?? "Nombre no encontrado");
+            }
+        }
+
+
+
         // Evento para pagar la venta
         private void PagarVenta_Click(object sender, RoutedEventArgs e)
         {
@@ -141,40 +160,62 @@ namespace TFG
                     return;
                 }
 
-                // Obtener los datos necesarios
+                // Obtener el DNI del cliente
                 string dniCliente = DniClienteTextBox.Text;
+
+                // Validar el DNI del cliente y obtener el nombre completo
+                var (esValido, nombreCompletoCliente) = ValidarYObtenerNombreCliente(dniCliente);
+                if (!esValido)
+                {
+                    MessageBox.Show("Este usuario no está dado de alta, pase por administración.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
                 double total = double.Parse(TotalTextBlock.Text.Replace("€", ""));
                 DateTime fechaCompra = DateTime.Now;
                 string nombreEmpresa = "OptiStock S.L.";
 
-                // Generar la lista de celdas para la tabla de productos
-                List<PdfPCell> productCells = new List<PdfPCell>();
-                foreach (var producto in productosEnVenta)
+                // Generar el número de documento
+                string numeroDocumento = GenerarNumeroDocumento(fechaCompra, TicketRadioButton.IsChecked == true);
+
+                // Insertar la venta en la tabla Ventas
+                int ventaId;
+                using (var conexion = new Conexion())
                 {
-                    productCells.Add(new PdfPCell(new Phrase(producto.ProductoId.ToString())));
-                    productCells.Add(new PdfPCell(new Phrase(producto.Cantidad.ToString())));
-                    productCells.Add(new PdfPCell(new Phrase(producto.ValorUnitario.ToString("C2"))));
-                    productCells.Add(new PdfPCell(new Phrase(producto.Subtotal.ToString("C2"))));
+                    conexion.AbrirConexion();
+                    var command = new MySqlCommand("INSERT INTO Ventas (DniCliente, NumeroDocumento, Total) VALUES (@dniCliente, @numeroDocumento, @total); SELECT LAST_INSERT_ID();", conexion.ObtenerConexion());
+                    command.Parameters.AddWithValue("@dniCliente", dniCliente);
+                    command.Parameters.AddWithValue("@numeroDocumento", numeroDocumento);
+                    command.Parameters.AddWithValue("@total", total);
+
+                    ventaId = Convert.ToInt32(command.ExecuteScalar()); // Obtener el ID de la venta insertada
+                }
+
+                // Insertar en HistorialVentas
+                using (var conexion = new Conexion())
+                {
+                    conexion.AbrirConexion();
+                    foreach (var producto in productosEnVenta)
+                    {
+                        var command = new MySqlCommand("INSERT INTO HistorialVentas (NumeroDocumento, Producto, Cantidad) VALUES (@numeroDocumento, @productoId, @cantidad);", conexion.ObtenerConexion());
+                        command.Parameters.AddWithValue("@numeroDocumento", numeroDocumento);
+                        command.Parameters.AddWithValue("@productoId", producto.ProductoId);
+                        command.Parameters.AddWithValue("@cantidad", producto.Cantidad);
+                        command.ExecuteNonQuery();
+                    }
+                    conexion.CerrarConexion();
                 }
 
 
-                // Verificar si se seleccionó generar un ticket o una factura
+                // Generar el PDF del ticket o factura
                 if (TicketRadioButton.IsChecked == true)
                 {
-                    // Generar el PDF del ticket
                     GenerarPDFTicket(dniCliente, productosEnVenta, total, fechaCompra, nombreEmpresa);
                 }
                 else if (FacturaRadioButton.IsChecked == true)
                 {
-                    // Generar el PDF de la factura
-                    GenerarPDFFactura(dniCliente, productosEnVenta, total, fechaCompra, nombreEmpresa);
+                    GenerarPDFFactura(dniCliente, nombreCompletoCliente, productosEnVenta, total, fechaCompra, nombreEmpresa);
                 }
-                else
-                {
-                    MessageBox.Show("Debe seleccionar si desea generar un ticket o una factura.", "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
 
                 // Limpiar la venta
                 productosEnVenta.Clear();
@@ -185,20 +226,58 @@ namespace TFG
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al procesar la venta: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error al buscar el producto: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
             }
         }
+
+        private string GenerarNumeroDocumento(DateTime fechaCompra, bool esTicket)
+        {
+            string prefijo = esTicket ? "TS" : "FS";
+            string fechaFormateada = fechaCompra.ToString("yyyyMMdd");
+
+            // Consultar el último número de documento
+            string query = $"SELECT NumeroDocumento FROM Ventas WHERE NumeroDocumento LIKE '{prefijo}{fechaFormateada}%' ORDER BY NumeroDocumento DESC LIMIT 1";
+
+            using (var conexion = new Conexion())
+            {
+                conexion.AbrirConexion();
+                var command = new MySqlCommand(query, conexion.ObtenerConexion());
+
+                // Obtener el último número de documento
+                var ultimoNumeroDocumento = command.ExecuteScalar()?.ToString();
+                int nuevoNumero;
+
+                if (ultimoNumeroDocumento != null)
+                {
+                    // Extraer las últimas 4 cifras y convertir a entero
+                    string numeroStr = ultimoNumeroDocumento.Substring(ultimoNumeroDocumento.Length - 4);
+                    nuevoNumero = int.Parse(numeroStr) + 1;
+                }
+                else
+                {
+                    nuevoNumero = 1; // Si no hay documentos, comienza desde 1
+                }
+
+                return $"{prefijo}{fechaFormateada}{nuevoNumero:D4}"; // Formatear como 4 dígitos
+            }
+        }
+
+
+
 
         private void GenerarPDFTicket(string dniCliente, List<DVenta> productosEnVenta, double totalCompra, DateTime fechaCompra, string nombreEmpresa)
         {
             // Generar el identificador único del ticket
-            string ticketId = $"TS{fechaCompra.ToString("yyyyMMdd")}{TicketContador.ToString("D4")}";
-            TicketContador++;
+            string ticketId = GenerarNumeroDocumento(fechaCompra,true);
 
             using (var document = new iTextSharp.text.Document())
             {
                 var outputFile = $"{ticketId}.pdf";
-                PdfWriter.GetInstance(document, new FileStream(outputFile, FileMode.Create));
+                var writer = PdfWriter.GetInstance(document, new FileStream(outputFile, FileMode.Create));
+
+                // Agregar el manejador de eventos para el pie de página
+                writer.PageEvent = new ManejadorPieDePagina("Para devolución de un producto, debera presentar este ticket.");
 
                 document.Open();
 
@@ -297,6 +376,7 @@ namespace TFG
                 totalParagraph.Alignment = Element.ALIGN_RIGHT;
                 document.Add(totalParagraph);
 
+
                 document.Close();
 
                 // Abrir el archivo PDF generado
@@ -305,77 +385,109 @@ namespace TFG
         }
 
 
-        private void GenerarPDFFactura(string dniCliente, List<DVenta> productosEnVenta, double totalCompra, DateTime fechaCompra, string nombreEmpresa)
+        public class ManejadorPieDePagina : PdfPageEventHelper
+        {
+            private string _texto;
+
+            public ManejadorPieDePagina(string texto)
+            {
+                _texto = texto;
+            }
+
+            public override void OnEndPage(PdfWriter writer, Document document)
+            {
+                BaseFont fuenteBase = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+                PdfContentByte contenidoPdf = writer.DirectContent;
+
+                contenidoPdf.BeginText();
+                contenidoPdf.SetFontAndSize(fuenteBase, 10);
+                contenidoPdf.ShowTextAligned(PdfContentByte.ALIGN_CENTER,
+                    _texto,
+                    document.PageSize.Width/2,
+                    document.BottomMargin +10,
+                    0);
+                contenidoPdf.EndText();
+            }
+        }
+
+        private void GenerarPDFFactura(string dniCliente, string nombreCompletoCliente, List<DVenta> productosEnVenta, double totalCompra, DateTime fechaCompra, string nombreEmpresa)
         {
             // Generar el identificador único de la factura
-            string facturaId = $"FS{fechaCompra.ToString("yyyyMMdd")}{FacturaContador.ToString("D4")}";
-            FacturaContador++;
+            string idFactura = GenerarNumeroDocumento(fechaCompra,true);
 
-            using (var document = new iTextSharp.text.Document())
+            using (var documento = new iTextSharp.text.Document())
             {
-                var outputFile = $"{facturaId}.pdf";
-                PdfWriter.GetInstance(document, new FileStream(outputFile, FileMode.Create));
+                var archivoSalida = $"{idFactura}.pdf";
+                var escritor = PdfWriter.GetInstance(documento, new FileStream(archivoSalida, FileMode.Create));
 
-                document.Open();
+                // Agregar el manejador de eventos para el pie de página
+                escritor.PageEvent = new ManejadorPieDePagina("Para devolución de un producto, debera presentar esta factura.");
+
+                documento.Open();
 
                 // Agregar el nombre de la empresa en negrita
-                var empresaPhrase = new Phrase($"{nombreEmpresa}", new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD));
-                var empresaParagraph = new Paragraph(empresaPhrase);
-                empresaParagraph.Alignment = Element.ALIGN_CENTER;
-                document.Add(empresaParagraph);
+                var frasaEmpresa = new Phrase($"{nombreEmpresa}", new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD));
+                var parrafoEmpresa = new Paragraph(frasaEmpresa);
+                parrafoEmpresa.Alignment = Element.ALIGN_CENTER;
+                documento.Add(parrafoEmpresa);
 
                 // Agregar un espacio de 2 líneas
-                document.Add(new Paragraph(" "));
-                document.Add(new Paragraph(" "));
+                documento.Add(new Paragraph(" "));
+                documento.Add(new Paragraph(" "));
 
                 // Agregar el DNI del cliente
-                var dniParagraph = new Paragraph($"DNI Cliente: {dniCliente}");
-                dniParagraph.Alignment = Element.ALIGN_LEFT;
-                document.Add(dniParagraph);
+                var parrafoDni = new Paragraph($"DNI Cliente: {dniCliente}");
+                parrafoDni.Alignment = Element.ALIGN_LEFT;
+                documento.Add(parrafoDni);
+
+                // Agregar el nombre completo del cliente
+                var parrafoNombreCompleto = new Paragraph($"Nombre: {nombreCompletoCliente}");
+                parrafoNombreCompleto.Alignment = Element.ALIGN_LEFT;
+                documento.Add(parrafoNombreCompleto);
 
                 // Agregar el número de factura
-                var facturaParagraph = new Paragraph($"Nº de Factura: {facturaId}");
-                facturaParagraph.Alignment = Element.ALIGN_LEFT;
-                document.Add(facturaParagraph);
+                var parrafoFactura = new Paragraph($"Nº de Factura: {idFactura}");
+                parrafoFactura.Alignment = Element.ALIGN_LEFT;
+                documento.Add(parrafoFactura);
 
                 // Agregar la fecha de compra
-                var fechaParagraph = new Paragraph($"Fecha: {fechaCompra.ToString("dd/MM/yyyy HH:mm:ss")}");
-                fechaParagraph.Alignment = Element.ALIGN_LEFT;
-                document.Add(fechaParagraph);
+                var parrafoFecha = new Paragraph($"Fecha: {fechaCompra.ToString("dd/MM/yyyy HH:mm:ss")}");
+                parrafoFecha.Alignment = Element.ALIGN_LEFT;
+                documento.Add(parrafoFecha);
 
                 // Agregar un espacio de 1 línea
-                document.Add(new Paragraph(" "));
+                documento.Add(new Paragraph(" "));
 
                 // Agregar el listado de productos
-                var productTable = new PdfPTable(6);
-                productTable.WidthPercentage = 100;
-                productTable.SetWidths(new float[] { 100f, 190f, 60f, 100f, 100f, 100f });
+                var tablaProductos = new PdfPTable(6);
+                tablaProductos.WidthPercentage = 100;
+                tablaProductos.SetWidths(new float[] { 100f, 190f, 60f, 100f, 100f, 100f });
 
                 // Agregar las celdas con fondo gris claro
-                PdfPCell cell;
-                cell = new PdfPCell(new Phrase("EAN", new Font(Font.FontFamily.HELVETICA, 10)));
-                cell.BackgroundColor = new BaseColor(220, 220, 220);
-                productTable.AddCell(cell);
+                PdfPCell celda;
+                celda = new PdfPCell(new Phrase("EAN", new Font(Font.FontFamily.HELVETICA, 10)));
+                celda.BackgroundColor = new BaseColor(220, 220, 220);
+                tablaProductos.AddCell(celda);
 
-                cell = new PdfPCell(new Phrase("Producto", new Font(Font.FontFamily.HELVETICA, 10)));
-                cell.BackgroundColor = new BaseColor(220, 220, 220);
-                productTable.AddCell(cell);
+                celda = new PdfPCell(new Phrase("Producto", new Font(Font.FontFamily.HELVETICA, 10)));
+                celda.BackgroundColor = new BaseColor(220, 220, 220);
+                tablaProductos.AddCell(celda);
 
-                cell = new PdfPCell(new Phrase("Cantidad", new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
-                cell.BackgroundColor = new BaseColor(220, 220, 220);
-                productTable.AddCell(cell);
+                celda = new PdfPCell(new Phrase("Cantidad", new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
+                celda.BackgroundColor = new BaseColor(220, 220, 220);
+                tablaProductos.AddCell(celda);
 
-                cell = new PdfPCell(new Phrase("Precio Sin IVA", new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
-                cell.BackgroundColor = new BaseColor(220, 220, 220);
-                productTable.AddCell(cell);
+                celda = new PdfPCell(new Phrase("Precio Sin IVA", new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
+                celda.BackgroundColor = new BaseColor(220, 220, 220);
+                tablaProductos.AddCell(celda);
 
-                cell = new PdfPCell(new Phrase("Precio", new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
-                cell.BackgroundColor = new BaseColor(220, 220, 220);
-                productTable.AddCell(cell);
+                celda = new PdfPCell(new Phrase("Precio", new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
+                celda.BackgroundColor = new BaseColor(220, 220, 220);
+                tablaProductos.AddCell(celda);
 
-                cell = new PdfPCell(new Phrase("Total", new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
-                cell.BackgroundColor = new BaseColor(220, 220, 220);
-                productTable.AddCell(cell);
+                celda = new PdfPCell(new Phrase("Total", new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
+                celda.BackgroundColor = new BaseColor(220, 220, 220);
+                tablaProductos.AddCell(celda);
 
                 double totalSinIVA = 0;
 
@@ -388,15 +500,15 @@ namespace TFG
                         // Obtener el nombre y el precio sin IVA del producto desde la base de datos
                         string nombreProducto;
                         double precioSinIVA;
-                        var command = new MySqlCommand("SELECT Nombre, Precio FROM Productos WHERE EAN = @ean", conexion.ObtenerConexion());
-                        command.Parameters.AddWithValue("@ean", producto.ProductoId);
+                        var comando = new MySqlCommand("SELECT Nombre, Precio FROM Productos WHERE EAN = @ean", conexion.ObtenerConexion());
+                        comando.Parameters.AddWithValue("@ean", producto.ProductoId);
 
-                        using (var reader = command.ExecuteReader())
+                        using (var lector = comando.ExecuteReader())
                         {
-                            if (reader.Read())
+                            if (lector.Read())
                             {
-                                nombreProducto = reader["Nombre"].ToString();
-                                precioSinIVA = Convert.ToDouble(reader["Precio"]);
+                                nombreProducto = lector["Nombre"].ToString();
+                                precioSinIVA = Convert.ToDouble(lector["Precio"]);
                             }
                             else
                             {
@@ -405,12 +517,12 @@ namespace TFG
                             }
                         }
 
-                        productTable.AddCell(new Phrase(producto.ProductoId.ToString(), new Font(Font.FontFamily.HELVETICA, 10)));
-                        productTable.AddCell(new Phrase(nombreProducto, new Font(Font.FontFamily.HELVETICA, 10)));
-                        productTable.AddCell(new Phrase(producto.Cantidad.ToString(), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
-                        productTable.AddCell(new Phrase(precioSinIVA.ToString("C2"), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
-                        productTable.AddCell(new Phrase(producto.ValorUnitario.ToString("C2"), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
-                        productTable.AddCell(new Phrase(producto.Subtotal.ToString("C2"), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
+                        tablaProductos.AddCell(new Phrase(producto.ProductoId.ToString(), new Font(Font.FontFamily.HELVETICA, 10)));
+                        tablaProductos.AddCell(new Phrase(nombreProducto, new Font(Font.FontFamily.HELVETICA, 10)));
+                        tablaProductos.AddCell(new Phrase(producto.Cantidad.ToString(), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
+                        tablaProductos.AddCell(new Phrase(precioSinIVA.ToString("C2"), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
+                        tablaProductos.AddCell(new Phrase(producto.ValorUnitario.ToString("C2"), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
+                        tablaProductos.AddCell(new Phrase(producto.Subtotal.ToString("C2"), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
 
                         totalSinIVA += precioSinIVA * producto.Cantidad;
                     }
@@ -418,23 +530,25 @@ namespace TFG
                     conexion.CerrarConexion();
                 }
 
-                document.Add(productTable);
+                documento.Add(tablaProductos);
 
                 // Agregar el total de la compra sin IVA
-                var totalSinIVAParagraph = new Paragraph($"Total Sin IVA: {totalSinIVA.ToString("C2")}");
-                totalSinIVAParagraph.Alignment = Element.ALIGN_RIGHT;
-                document.Add(totalSinIVAParagraph);
+                var parrafoTotalSinIVA = new Paragraph($"Total Sin IVA: {totalSinIVA.ToString("C2")}");
+                parrafoTotalSinIVA.Alignment = Element.ALIGN_RIGHT;
+                documento.Add(parrafoTotalSinIVA);
 
                 // Agregar el total de la compra con IVA
-                var totalParagraph = new Paragraph($"Total: {totalCompra.ToString("C2")}");
-                totalParagraph.Alignment = Element.ALIGN_RIGHT;
-                document.Add(totalParagraph);
+                var parrafoTotal = new Paragraph($"Total: {totalCompra.ToString("C2")}");
+                parrafoTotal.Alignment = Element.ALIGN_RIGHT;
+                documento.Add(parrafoTotal);
 
-                document.Close();
+                documento.Close();
 
                 // Abrir el archivo PDF generado
-                System.Diagnostics.Process.Start(outputFile);
+                System.Diagnostics.Process.Start(archivoSalida);
             }
+        
+
         }
 
 
