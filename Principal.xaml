@@ -50,7 +50,7 @@
                         <StackPanel>
                             <Button Content="Catálogo de Productos" Margin="5" Click="MostrarCatalogoProductos"/>
                             <Button Content="Categorías" Margin="5" Click="MostrarCategorias"/>
-                            <Button Content="Precios y Promociones" Margin="5"/>
+                            <Button Content="Precios y Promociones" Margin="5" Click="MostrarPreciosYPromociones"/>
                         </StackPanel>
                     </GroupBox>
 

@@ -61,6 +61,15 @@ namespace TFG
             contenidoPrincipal.Content = nominasView;
         }
 
+        private void MostrarPreciosYPromociones(object sender, RoutedEventArgs e)
+        {
+            PreciosyPromociones.PreciosyPromociones preciosyPromocionesView = new PreciosyPromociones.PreciosyPromociones();
+            ContentControl contenidoPrincipal = (ContentControl)FindName("ContenidoPrincipal");
+            contenidoPrincipal.Content = null;
+            contenidoPrincipal.Content = preciosyPromocionesView;
+        }
+
+
         private void ChangeBackgroundColor(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
