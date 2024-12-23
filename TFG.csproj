@@ -117,6 +117,9 @@
       <DependentUpon>Nominas.xaml</DependentUpon>
     </Compile>
     <Compile Include="Nominas\Trabajadores.cs" />
+    <Compile Include="PreciosyPromociones\PreciosyPromociones.xaml.cs">
+      <DependentUpon>PreciosyPromociones.xaml</DependentUpon>
+    </Compile>
     <!-- Archivos de Antonio1 -->
     <Compile Include="Ventas\NuevaVentaView.xaml.cs">
       <DependentUpon>NuevaVentaView.xaml</DependentUpon>
@@ -202,6 +205,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Nominas\Nominas.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PreciosyPromociones\PreciosyPromociones.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
