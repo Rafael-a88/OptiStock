@@ -17,13 +17,17 @@ namespace TFG
         public double Iva { get; set; }
         public double PrecioTotal { get; set; }
         public string Descripcion { get; set; }
-        public int CategoriaId { get; set; } // Mantener esta propiedad para el ID
-        public string CategoriaNombre { get; set; } // Nueva propiedad para el nombre
+        public int CategoriaId { get; set; } 
+        public string CategoriaNombre { get; set; } 
         public int Stock { get; set; }
         public string Imagen { get; set; }
         public DateTime FechaCreacion { get; set; }
         public double Descuento { get; set; }
         public string EAN { get; set; }
+        public int CantidadMaxima { get; set; } 
+        public int CantidadMinima { get; set; } 
+
+        public bool IsOutOfStock => Stock <= CantidadMinima;
     }
 
 }

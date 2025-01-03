@@ -113,6 +113,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ControlDeStock\ControlDeStock.xaml.cs">
+      <DependentUpon>ControlDeStock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ControlDeStock\ModificarMaximasyMinimas.xaml.cs">
+      <DependentUpon>ModificarMaximasyMinimas.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Nominas\Nominas.xaml.cs">
       <DependentUpon>Nominas.xaml</DependentUpon>
     </Compile>
@@ -166,6 +172,14 @@
     <Page Include="Categorias\DetallesCategoriaView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ControlDeStock\ControlDeStock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ControlDeStock\ModificarMaximasyMinimas.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
