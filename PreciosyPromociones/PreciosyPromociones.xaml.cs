@@ -107,15 +107,35 @@ namespace TFG.PreciosyPromociones
                     int productoId = Convert.ToInt32(selectedRow["Id"]);
                     string nombreProducto = selectedRow["Nombre"].ToString();
 
-                    // Obtener el precio original del producto
-                    decimal precioOriginal = Convert.ToDecimal(selectedRow["Precio"]);
-                    decimal descuentoAplicado = precioOriginal * (porcentajeDescuento / 100);
-                    decimal nuevoPrecio = precioOriginal - descuentoAplicado;
+                    // Obtener el precio actual y el descuento actual del producto
+                    decimal precioActual = Convert.ToDecimal(selectedRow["Precio"]);
+                    decimal descuentoActual = selectedRow["Descuento"] != DBNull.Value ? Convert.ToDecimal(selectedRow["Descuento"]) : 0m;
+
+                    // Calcular el precio original basado en el precio actual y el descuento actual
+                    decimal factorDescuento = 1 - (descuentoActual / 100);
+                    if (factorDescuento == 0)
+                    {
+                        MessageBox.Show("El descuento actual es del 100%, no se puede calcular el precio original.");
+                        return;
+                    }
+
+                    decimal precioOriginal = precioActual / factorDescuento;
+
+                    // Calcular el nuevo precio basado en el precio original y el nuevo descuento
+                    decimal nuevoPrecio = precioOriginal * (1 - (porcentajeDescuento / 100));
+
+                    // Asegurarse de que el nuevo precio no sea negativo
+                    if (nuevoPrecio < 0)
+                    {
+                        MessageBox.Show("El descuento aplicado resulta en un precio negativo. Por favor, revise el porcentaje.");
+                        return;
+                    }
 
                     // Actualizar el precio y el descuento en el DataTable
                     selectedRow["Precio"] = nuevoPrecio;
+                    selectedRow["Descuento"] = porcentajeDescuento;
 
-                    // Actualizar el campo Precio y Descuento en la base de datos
+                    // Actualizar los campos Precio y Descuento en la base de datos
                     string query = "UPDATE productos SET Precio = @nuevoPrecio, Descuento = @descuento WHERE Id = @productoId;";
 
                     using (Conexion conexion = new Conexion())
@@ -160,6 +180,7 @@ namespace TFG.PreciosyPromociones
                 MessageBox.Show("Por favor, introduzca un número válido.");
             }
         }
+
 
         private void Header_Click(object sender, MouseButtonEventArgs e)
         {

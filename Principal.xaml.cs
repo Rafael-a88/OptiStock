@@ -69,6 +69,14 @@ namespace TFG
             contenidoPrincipal.Content = preciosyPromocionesView;
         }
 
+        private void ControlDeStock(object sender, RoutedEventArgs e)
+        {
+            ControlDeStock.ControlDeStock ControlDeStockView = new ControlDeStock.ControlDeStock();
+            ContentControl contenidoPrincipal = (ContentControl)FindName("ContenidoPrincipal");
+            contenidoPrincipal.Content = null;
+            contenidoPrincipal.Content = ControlDeStockView;
+        }
+
 
         private void ChangeBackgroundColor(object sender, RoutedEventArgs e)
         {

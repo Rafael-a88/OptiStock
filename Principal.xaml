@@ -57,7 +57,7 @@
                     <!-- Gestión de Inventario -->
                     <GroupBox Header="Gestión de Inventario" Margin="0,5">
                         <StackPanel>
-                            <Button Content="Control de Stock" Margin="5"/>
+                            <Button Content="Control de Stock" Margin="5" Click="ControlDeStock"/>
                             <Button Content="Movimientos" Margin="5"/>
                             <Button Content="Ubicaciones" Margin="5"/>
                             <Button Content="Inventario Físico" Margin="5"/>

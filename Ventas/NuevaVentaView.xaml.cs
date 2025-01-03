@@ -206,15 +206,16 @@ namespace TFG
                     conexion.CerrarConexion();
                 }
 
+                RegularizarStock(productosEnVenta);
 
                 // Generar el PDF del ticket o factura
                 if (TicketRadioButton.IsChecked == true)
                 {
-                    GenerarPDFTicket(dniCliente, productosEnVenta, total, fechaCompra, nombreEmpresa);
+                    GenerarPDFTicket(dniCliente, productosEnVenta, total, fechaCompra, nombreEmpresa, numeroDocumento); // Pasar numeroDocumento
                 }
                 else if (FacturaRadioButton.IsChecked == true)
                 {
-                    GenerarPDFFactura(dniCliente, nombreCompletoCliente, productosEnVenta, total, fechaCompra, nombreEmpresa);
+                    GenerarPDFFactura(dniCliente, nombreCompletoCliente, productosEnVenta, total, fechaCompra, nombreEmpresa, numeroDocumento); // Pasar numeroDocumento
                 }
 
                 // Limpiar la venta
@@ -227,9 +228,9 @@ namespace TFG
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al buscar el producto: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
             }
         }
+
 
         private string GenerarNumeroDocumento(DateTime fechaCompra, bool esTicket)
         {
@@ -266,11 +267,8 @@ namespace TFG
 
 
 
-        private void GenerarPDFTicket(string dniCliente, List<DVenta> productosEnVenta, double totalCompra, DateTime fechaCompra, string nombreEmpresa)
+        private void GenerarPDFTicket(string dniCliente, List<DVenta> productosEnVenta, double totalCompra, DateTime fechaCompra, string nombreEmpresa, string ticketId)
         {
-            // Generar el identificador único del ticket
-            string ticketId = GenerarNumeroDocumento(fechaCompra,true);
-
             using (var document = new iTextSharp.text.Document())
             {
                 var outputFile = $"{ticketId}.pdf";
@@ -376,13 +374,13 @@ namespace TFG
                 totalParagraph.Alignment = Element.ALIGN_RIGHT;
                 document.Add(totalParagraph);
 
-
                 document.Close();
 
                 // Abrir el archivo PDF generado
                 System.Diagnostics.Process.Start(outputFile);
             }
         }
+
 
 
         public class ManejadorPieDePagina : PdfPageEventHelper
@@ -410,11 +408,8 @@ namespace TFG
             }
         }
 
-        private void GenerarPDFFactura(string dniCliente, string nombreCompletoCliente, List<DVenta> productosEnVenta, double totalCompra, DateTime fechaCompra, string nombreEmpresa)
+        private void GenerarPDFFactura(string dniCliente, string nombreCompletoCliente, List<DVenta> productosEnVenta, double totalCompra, DateTime fechaCompra, string nombreEmpresa, string idFactura)
         {
-            // Generar el identificador único de la factura
-            string idFactura = GenerarNumeroDocumento(fechaCompra,true);
-
             using (var documento = new iTextSharp.text.Document())
             {
                 var archivoSalida = $"{idFactura}.pdf";
@@ -547,8 +542,26 @@ namespace TFG
                 // Abrir el archivo PDF generado
                 System.Diagnostics.Process.Start(archivoSalida);
             }
-        
+        }
 
+        private void RegularizarStock(List<DVenta> productosEnVenta)
+        {
+            using (var conexion = new Conexion())
+            {
+                conexion.AbrirConexion();
+
+                foreach (var producto in productosEnVenta)
+                {
+                    var comando = new MySqlCommand("UPDATE productos SET Stock = Stock - @cantidad WHERE EAN = @ean", conexion.ObtenerConexion());
+                    comando.Parameters.AddWithValue("@cantidad", producto.Cantidad);
+                    comando.Parameters.AddWithValue("@ean", producto.ProductoId);
+
+                    // Ejecutar el comando
+                    comando.ExecuteNonQuery();
+                }
+
+                conexion.CerrarConexion();
+            }
         }
 
 
