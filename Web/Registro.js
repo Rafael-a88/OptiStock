@@ -3,7 +3,7 @@ document.getElementById('registroForm').addEventListener('submit', function(even
     event.preventDefault(); // Evita el comportamiento por defecto del formulario
 
     const nombre = document.getElementById('nombre').value;
-    const apellidos = document.getElementById('apellido').value; // Cambiado de 'apellidos' a 'apellido'
+    const apellidos = document.getElementById('apellido').value; 
     const direccion = document.getElementById('direccion').value;
     const ciudad = document.getElementById('ciudad').value;
     const correo = document.getElementById('correoRegistro').value;
@@ -18,7 +18,7 @@ document.getElementById('registroForm').addEventListener('submit', function(even
  
     
     // Validación de apellido (letras y espacios)
-    const apellidoRegex = /^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$/; // Añade \s para permitir espacios
+    const apellidoRegex = /^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$/;
     if (!apellidoRegex.test(apellidos)) {
         alert('El apellido solo debe contener letras y espacios.');
         return;
