@@ -77,7 +77,7 @@
                     <!-- Compras -->
                     <GroupBox Header="Compras" Margin="0,5">
                         <StackPanel>
-                            <Button Content="Órdenes de Compra" Margin="5"/>
+                            <Button Content="Órdenes de Compra" Margin="5" Click="MisOrdenesDeCompra"/>
                             <Button Content="Recepción de Mercancía" Margin="5"/>
                             <Button Content="Gestión de Proveedores" Margin="5"/>
                         </StackPanel>

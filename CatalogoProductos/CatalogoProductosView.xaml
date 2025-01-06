@@ -101,7 +101,7 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
 
-                        <GridViewColumn Width="150">
+                        <GridViewColumn Width="300">
                             <GridViewColumn.Header>
                                 <TextBlock Text="Nombre" MouseDown="Header_Click" Tag="Nombre" 
                              HorizontalAlignment="Center"/>
@@ -173,7 +173,7 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
 
-                        <GridViewColumn Width="300">
+                        <GridViewColumn Width="500">
                             <GridViewColumn.Header>
                                 <TextBlock Text="Descripción" MouseDown="Header_Click" Tag="Descripcion" 
                              HorizontalAlignment="Center"/>
@@ -247,7 +247,7 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
 
-                        <GridViewColumn Width="150">
+                        <GridViewColumn Width="500">
                             <GridViewColumn.Header>
                                 <TextBlock Text="Imagen" MouseDown="Header_Click" Tag="Imagen" HorizontalAlignment="Center"/>
                             </GridViewColumn.Header>

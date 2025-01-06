@@ -123,6 +123,10 @@
       <DependentUpon>Nominas.xaml</DependentUpon>
     </Compile>
     <Compile Include="Nominas\Trabajadores.cs" />
+    <Compile Include="OrdenesDeCompra\OrdenesDeCompra.xaml.cs">
+      <DependentUpon>OrdenesDeCompra.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OrdenesDeCompra\PedidoDeCompra.cs" />
     <Compile Include="PreciosyPromociones\PreciosyPromociones.xaml.cs">
       <DependentUpon>PreciosyPromociones.xaml</DependentUpon>
     </Compile>
@@ -221,6 +225,10 @@
     <Page Include="Nominas\Nominas.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OrdenesDeCompra\OrdenesDeCompra.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PreciosyPromociones\PreciosyPromociones.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -340,6 +348,10 @@
     <Resource Include="Imagenes\ImagenesProductos\Papeleria\mochilamario.jpeg" />
     <Resource Include="Imagenes\ImagenesProductos\Papeleria\mochilavaina.jpeg" />
     <Resource Include="Imagenes\ImagenesProductos\Papeleria\portatodotriple.jpeg" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Imagenes\Iconos\orden de compra.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
