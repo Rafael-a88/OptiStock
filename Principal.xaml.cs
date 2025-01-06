@@ -77,6 +77,14 @@ namespace TFG
             contenidoPrincipal.Content = ControlDeStockView;
         }
 
+        private void MisOrdenesDeCompra(object sender, RoutedEventArgs e)
+        {
+            OrdenesDeCompra.OrdenesDeCompra OrdenesView = new OrdenesDeCompra.OrdenesDeCompra();
+            ContentControl contenidoPrincipal = (ContentControl)FindName("ContenidoPrincipal");
+            contenidoPrincipal.Content = null;
+            contenidoPrincipal.Content = OrdenesView;
+        }
+
 
         private void ChangeBackgroundColor(object sender, RoutedEventArgs e)
         {
