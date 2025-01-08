@@ -97,6 +97,7 @@ app.get('/cliente/:correo', (req, res) => {
     });
 });
 
+
 app.post('/pedidos', async (req, res) => {
     console.log('Solicitud recibida:', req.body);
     const { pedido, detallesPedido } = req.body;
@@ -139,13 +140,13 @@ app.post('/pedidos', async (req, res) => {
             });
         };
 
-        // 2. Obtener los IDs de los productos
-        const getProductoId = (nombreProducto) => {
+        // 2. Obtener los IDs de los productos (actualizado para buscar por nombre o EAN)
+        const getProductoId = (detalle) => {
             return new Promise((resolve, reject) => {
-                const sqlBuscarProducto = 'SELECT Id FROM productos WHERE Nombre = ?';
-                console.log('Buscando producto:', nombreProducto);
+                const sqlBuscarProducto = 'SELECT Id, Stock FROM productos WHERE Nombre = ? OR EAN = ?';
+                console.log('Buscando producto:', detalle.nombreProducto, 'o EAN:', detalle.ean);
 
-                conexion.query(sqlBuscarProducto, [nombreProducto], (err, resultadoProducto) => {
+                conexion.query(sqlBuscarProducto, [detalle.nombreProducto, detalle.ean], (err, resultadoProducto) => {
                     if (err) {
                         console.error('Error en la consulta de producto:', err);
                         return reject(err);
@@ -154,10 +155,10 @@ app.post('/pedidos', async (req, res) => {
                     console.log('Resultado búsqueda producto:', resultadoProducto);
 
                     if (!resultadoProducto || resultadoProducto.length === 0) {
-                        return reject(new Error(`Producto no encontrado: ${nombreProducto}`));
+                        return reject(new Error(`Producto no encontrado: ${detalle.nombreProducto} o EAN: ${detalle.ean}`));
                     }
 
-                    resolve(resultadoProducto[0].Id);
+                    resolve(resultadoProducto[0]);
                 });
             });
         };
@@ -172,11 +173,12 @@ app.post('/pedidos', async (req, res) => {
         const detallesConIds = await Promise.all(
             detallesPedido.map(async (detalle) => {
                 try {
-                    const productoId = await getProductoId(detalle.nombreProducto);
-                    console.log(`Producto "${detalle.nombreProducto}" encontrado con ID:`, productoId);
+                    const producto = await getProductoId(detalle);
+                    console.log(`Producto "${detalle.nombreProducto}" encontrado con ID:`, producto.Id);
                     return {
                         ...detalle,
-                        productoId
+                        productoId: producto.Id,
+                        stock: producto.Stock // Guardamos el stock disponible
                     };
                 } catch (error) {
                     throw new Error(`Error al buscar producto "${detalle.nombreProducto}": ${error.message}`);
@@ -246,13 +248,22 @@ app.post('/pedidos', async (req, res) => {
 
                 console.log('Pedido insertado con ID:', nuevoIdPedido); // Imprimir el ID del pedido insertado
 
-                // Insertar detalles del pedido
+                // Insertar detalles del pedido y actualizar stock
                 for (const detalle of detallesConIds) {
                     console.log('Insertando detalle:', {
                         pedidoId: nuevoIdPedido,
                         productoId: detalle.productoId,
-                        cantidad: detalle.cantidad
+                        cantidad: detalle.cantidad,
+                        stock: detalle.stock // Mostrar el stock del producto
                     });
+
+                    // Verificar si hay suficiente stock
+                    if (detalle.stock < detalle.cantidad) {
+                        console.error(`Stock insuficiente para el producto ID ${detalle.productoId}. Stock actual: ${detalle.stock}, cantidad solicitada: ${detalle.cantidad}`);
+                        return conexion.rollback(() => {
+                            res.status(400).json({ error: `Stock insuficiente para el producto "${detalle.nombreProducto}".` });
+                        });
+                    }
 
                     try {
                         // Insertar el detalle en la tabla detalle_pedido
@@ -266,8 +277,21 @@ app.post('/pedidos', async (req, res) => {
                                 resolve(result);
                             });
                         });
+
+                        // Descontar el stock del producto
+                        await new Promise((resolve, reject) => {
+                            const sqlActualizarStock = 'UPDATE productos SET Stock = Stock - ? WHERE Id = ?';
+                            conexion.query(sqlActualizarStock, [detalle.cantidad, detalle.productoId], (err, result) => {
+                                if (err) {
+                                    console.error('Error al actualizar el stock:', err);
+                                    return reject(err);
+                                }
+                                resolve(result);
+                            });
+                        });
+
                     } catch (error) {
-                        console.error('Error al insertar detalle:', error);
+                        console.error('Error al insertar detalle o actualizar stock:', error);
                         // Revertir la transacción si hay un error al insertar un detalle
                         return conexion.rollback(() => {
                             res.status(500).json({ error: 'Error al procesar la solicitud de pedido.' });
@@ -298,12 +322,6 @@ app.post('/pedidos', async (req, res) => {
         return res.status(500).json({ error: 'Error al procesar la solicitud de pedido.' });
     }
 });
-
-
-
-
-
-
 
 
 
