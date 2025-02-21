@@ -143,10 +143,10 @@ app.post('/pedidos', async (req, res) => {
         // 2. Obtener los IDs de los productos (actualizado para buscar por nombre o EAN)
         const getProductoId = (detalle) => {
             return new Promise((resolve, reject) => {
-                const sqlBuscarProducto = 'SELECT Id, Stock FROM productos WHERE Nombre = ? OR EAN = ?';
-                console.log('Buscando producto:', detalle.nombreProducto, 'o EAN:', detalle.ean);
+                const sqlBuscarProducto = 'SELECT Id, Stock, EAN FROM productos WHERE Nombre = ?';
+                console.log('Buscando producto:', detalle.nombreProducto);
 
-                conexion.query(sqlBuscarProducto, [detalle.nombreProducto, detalle.ean], (err, resultadoProducto) => {
+                conexion.query(sqlBuscarProducto, [detalle.nombreProducto], (err, resultadoProducto) => {
                     if (err) {
                         console.error('Error en la consulta de producto:', err);
                         return reject(err);
@@ -155,7 +155,7 @@ app.post('/pedidos', async (req, res) => {
                     console.log('Resultado búsqueda producto:', resultadoProducto);
 
                     if (!resultadoProducto || resultadoProducto.length === 0) {
-                        return reject(new Error(`Producto no encontrado: ${detalle.nombreProducto} o EAN: ${detalle.ean}`));
+                        return reject(new Error(`Producto no encontrado: ${detalle.nombreProducto} `));
                     }
 
                     resolve(resultadoProducto[0]);
@@ -178,7 +178,8 @@ app.post('/pedidos', async (req, res) => {
                     return {
                         ...detalle,
                         productoId: producto.Id,
-                        stock: producto.Stock // Guardamos el stock disponible
+                        stock: producto.Stock, // Guardamos el stock disponible
+                        ean: producto.EAN // Guardamos el EAN del producto 
                     };
                 } catch (error) {
                     throw new Error(`Error al buscar producto "${detalle.nombreProducto}": ${error.message}`);
@@ -254,7 +255,9 @@ app.post('/pedidos', async (req, res) => {
                         pedidoId: nuevoIdPedido,
                         productoId: detalle.productoId,
                         cantidad: detalle.cantidad,
-                        stock: detalle.stock // Mostrar el stock del producto
+                        stock: detalle.stock,
+                        ean: detalle.ean
+                        
                     });
 
                     // Verificar si hay suficiente stock
@@ -287,6 +290,18 @@ app.post('/pedidos', async (req, res) => {
                                     return reject(err);
                                 }
                                 resolve(result);
+                            });
+                        });
+
+                         // Insertar movimiento en la tabla Movimientos
+                        console.log(`Insertando movimiento para el producto EAN: ${detalle.ean}`);
+                        await new Promise((resolve, reject) => {
+                            const sqlMovimiento = 'INSERT INTO Movimientos (ProductoEAN, TipoMovimiento, Cantidad) VALUES (?, ?, ?)';
+                            conexion.query(sqlMovimiento, [detalle.ean, 'Venta Web', detalle.cantidad], (err, result) => {
+                                if (err) {
+                                    console.error('Error al insertar movimiento:', err);
+                                    return reject(err);
+                                }
                             });
                         });
 
