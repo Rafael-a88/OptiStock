@@ -84,6 +84,7 @@
             </StackPanel>
 
             <ListView x:Name="ControlDeStockListView" MaxHeight="350" MaxWidth="1200" Background="Linen">
+
                 <ListView.ContextMenu>
                     <ContextMenu>
                         <MenuItem  Click="MandarOrdenesButton_Click" Header="Opciones">
@@ -94,6 +95,7 @@
                         </MenuItem>
                     </ContextMenu>
                 </ListView.ContextMenu>
+
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

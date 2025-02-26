@@ -1,5 +1,6 @@
 ﻿using MySqlConnector;
 using System;
+
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
@@ -7,16 +8,33 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
 
 namespace TFG.OrdenesDeCompra
 {
     public partial class OrdenesDeCompra : UserControl
     {
+
         private ObservableCollection<PedidoDeCompra> _pedidosDeCompra; // Lista de pedidos de compra
+
 
         public OrdenesDeCompra()
         {
             InitializeComponent();
+
             _pedidosDeCompra = new ObservableCollection<PedidoDeCompra>(); // Inicializar la lista de pedidos de compra
             CargarPedidosDeCompra(); // Cargar los pedidos de compra iniciales
         }
@@ -37,12 +55,14 @@ namespace TFG.OrdenesDeCompra
                     while (reader.Read())
                     {
                         var pedido = new PedidoDeCompra
+
                         {
                             ID = (int)reader["Id"],
                             NumeroOrden = reader["NumeroOrden"].ToString(),
                             Proveedor = reader["Proveedor"].ToString(),
                             Estado = reader["Estado"].ToString(),
                             FechaApertura = (DateTime)reader["FechaApertura"]
+
                         };
 
                         // Agregar pedido a la colección
@@ -61,6 +81,7 @@ namespace TFG.OrdenesDeCompra
                             listViewItem.Background = new SolidColorBrush(Color.FromArgb(128, 0, 255, 0));
                         }
                     }
+
                 }
                 catch (Exception ex)
                 {
@@ -68,6 +89,7 @@ namespace TFG.OrdenesDeCompra
                 }
             }
         }
+
 
 
 
@@ -82,6 +104,8 @@ namespace TFG.OrdenesDeCompra
                                                          o.FechaApertura.ToString("dd/MM/yyyy").Contains(busqueda)).ToList();
 
             OrdenesDeCompraListView.ItemsSource = resultados; // Asignar los resultados filtrados al ListView
+
+
         }
 
         private void BuscarTextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -104,6 +128,7 @@ namespace TFG.OrdenesDeCompra
             }
         }
 
+
         private void RefrescarButton_Click(object sender, RoutedEventArgs e)
         {
             // Implementar la lógica de actualización de la lista de pedidos de compra
@@ -112,6 +137,7 @@ namespace TFG.OrdenesDeCompra
 
         private void MandarOrdenButton_Click(object sender, RoutedEventArgs e)
         {
+
             PedidoDeCompra pedidoSeleccionado = (PedidoDeCompra)OrdenesDeCompraListView.SelectedItem;
             if (pedidoSeleccionado != null)
             {
@@ -161,4 +187,5 @@ namespace TFG.OrdenesDeCompra
             }
         }
     }
+
 }

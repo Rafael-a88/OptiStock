@@ -86,6 +86,7 @@ namespace TFG
             contenidoPrincipal.Content = OrdenesView;
         }
 
+
         private void Trabajadores(object sender, RoutedEventArgs e)
         {
             Window mainWindow = Window.GetWindow(this);
@@ -103,6 +104,7 @@ namespace TFG
             contenidoPrincipal.Content = null; 
             contenidoPrincipal.Content = movimientosView; 
         }
+
 
 
 

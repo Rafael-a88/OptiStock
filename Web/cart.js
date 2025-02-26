@@ -115,6 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
           alert("¡Compra finalizada con éxito!");
           localStorage.removeItem('cart');
           displayCart();
+          location.reload();
       } catch (error) {
           alert("Error al finalizar la compra: " + error);
           console.error("Error al finalizar la compra:", error);
