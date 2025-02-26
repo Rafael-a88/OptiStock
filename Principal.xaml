@@ -58,7 +58,7 @@
                     <GroupBox Header="Gestión de Inventario" Margin="0,5">
                         <StackPanel>
                             <Button Content="Control de Stock" Margin="5" Click="ControlDeStock"/>
-                            <Button Content="Movimientos" Margin="5"/>
+                            <Button Content="Movimientos" Margin="5" Click="Movimiento"/>
                             <Button Content="Ubicaciones" Margin="5"/>
                             <Button Content="Inventario Físico" Margin="5"/>
                         </StackPanel>
@@ -77,7 +77,7 @@
                     <!-- Compras -->
                     <GroupBox Header="Compras" Margin="0,5">
                         <StackPanel>
-                            <Button Content="Órdenes de Compra" Margin="5"/>
+                            <Button Content="Órdenes de Compra" Margin="5" Click="MisOrdenesDeCompra"/>
                             <Button Content="Recepción de Mercancía" Margin="5"/>
                             <Button Content="Gestión de Proveedores" Margin="5"/>
                         </StackPanel>
@@ -95,7 +95,7 @@
                     <!-- RRHH -->
                     <GroupBox Header="Recursos Humanos" Margin="0,5">
                         <StackPanel>
-                            <Button Content="Empleados" Margin="5"/>
+                            <Button Content="Empleados" Margin="5" Click="Trabajadores"/>
                             <Button Content="Turnos y Horarios" Margin="5"/>
                             <Button Content="Nóminas" Margin="5" Click="MostrarNominas"/>
                             <Button Content="Permisos y Vacaciones" Margin="5"/>

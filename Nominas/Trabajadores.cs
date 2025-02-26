@@ -22,6 +22,8 @@ namespace TFG.Nominas
         public string Contraseña { get; set; }
         public string NumeroSeguridadSocial { get; set; }
         public int CategoriaProfesional { get; set; }
+        public decimal PorcentajeIRPF { get; set; }
+
 
 
         // Propiedades de la tabla Nomina

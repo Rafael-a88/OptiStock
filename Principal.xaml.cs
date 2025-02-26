@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+
 namespace TFG
 {
     public partial class Principal : Window
@@ -76,6 +77,34 @@ namespace TFG
             contenidoPrincipal.Content = null;
             contenidoPrincipal.Content = ControlDeStockView;
         }
+
+        private void MisOrdenesDeCompra(object sender, RoutedEventArgs e)
+        {
+            OrdenesDeCompra.OrdenesDeCompra OrdenesView = new OrdenesDeCompra.OrdenesDeCompra();
+            ContentControl contenidoPrincipal = (ContentControl)FindName("ContenidoPrincipal");
+            contenidoPrincipal.Content = null;
+            contenidoPrincipal.Content = OrdenesView;
+        }
+
+        private void Trabajadores(object sender, RoutedEventArgs e)
+        {
+            Window mainWindow = Window.GetWindow(this);
+            Trabajadores.Trabajadores TrabajadoresView = new Trabajadores.Trabajadores(mainWindow);
+            ContentControl contenidoPrincipal = (ContentControl)FindName("ContenidoPrincipal");
+            contenidoPrincipal.Content = null;
+            contenidoPrincipal.Content = TrabajadoresView;
+        }
+
+        private void Movimiento(object sender, RoutedEventArgs e)
+        {
+          
+            Movimiento movimientosView = new Movimiento();
+            ContentControl contenidoPrincipal = (ContentControl)FindName("ContenidoPrincipal");
+            contenidoPrincipal.Content = null; 
+            contenidoPrincipal.Content = movimientosView; 
+        }
+
+
 
 
         private void ChangeBackgroundColor(object sender, RoutedEventArgs e)

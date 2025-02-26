@@ -119,12 +119,30 @@
     <Compile Include="ControlDeStock\ModificarMaximasyMinimas.xaml.cs">
       <DependentUpon>ModificarMaximasyMinimas.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Movimientos\MovimientoDTO.cs" />
+    <Compile Include="Movimientos\Movimiento.xaml.cs">
+      <DependentUpon>Movimiento.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Nominas\Nominas.xaml.cs">
       <DependentUpon>Nominas.xaml</DependentUpon>
     </Compile>
     <Compile Include="Nominas\Trabajadores.cs" />
+    <Compile Include="OrdenesDeCompra\DetallesOrdenCompra.xaml.cs">
+      <DependentUpon>DetallesOrdenCompra.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OrdenesDeCompra\OrdenesDeCompra.xaml.cs">
+      <DependentUpon>OrdenesDeCompra.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OrdenesDeCompra\PedidoDeCompra.cs" />
+    <Compile Include="OrdenesDeCompra\ProductoOrden.cs" />
     <Compile Include="PreciosyPromociones\PreciosyPromociones.xaml.cs">
       <DependentUpon>PreciosyPromociones.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Trabajadores\AgregarTrabajadores.xaml.cs">
+      <DependentUpon>AgregarTrabajadores.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Trabajadores\Trabajadores.xaml.cs">
+      <DependentUpon>Trabajadores.xaml</DependentUpon>
     </Compile>
     <!-- Archivos de Antonio1 -->
     <Compile Include="Ventas\NuevaVentaView.xaml.cs">
@@ -218,15 +236,35 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Movimientos\Movimiento.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Nominas\Nominas.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OrdenesDeCompra\DetallesOrdenCompra.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OrdenesDeCompra\OrdenesDeCompra.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PreciosyPromociones\PreciosyPromociones.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Principal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Trabajadores\AgregarTrabajadores.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Trabajadores\Trabajadores.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -341,5 +379,9 @@
     <Resource Include="Imagenes\ImagenesProductos\Papeleria\mochilavaina.jpeg" />
     <Resource Include="Imagenes\ImagenesProductos\Papeleria\portatodotriple.jpeg" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Imagenes\Iconos\orden de compra.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

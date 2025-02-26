@@ -96,7 +96,7 @@
         <!-- Botones de Guardar y Cancelar -->
         <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" Margin="0,0,50,50">
             <Button Name="GuardarCambiosButton" Content="Guardar Máximas y Mínimas"  Width="220" Height="40" Margin="10" FontSize="16" Click="GuardarCambiosButton_Click" Style="{StaticResource MaximasyMinimasButtonStyle}" />
-            <Button Content="Cancelar"  Width="200" Height="40" Margin="10" FontSize="16" Style="{StaticResource MaximasyMinimasButtonStyle}" />
+            <Button Content="Cancelar"  Width="200" Height="40" Margin="10" FontSize="16" Style="{StaticResource MaximasyMinimasButtonStyle}" Click="CancelarCambiosButton_Click"/>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -16,6 +16,7 @@ namespace TFG
         public double Precio { get; set; }
         public double Iva { get; set; }
         public double PrecioTotal { get; set; }
+        public int StockInicial { get; set; }
         public string Descripcion { get; set; }
         public int CategoriaId { get; set; } 
         public string CategoriaNombre { get; set; } 

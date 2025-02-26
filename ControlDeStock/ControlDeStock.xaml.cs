@@ -25,7 +25,7 @@ namespace TFG.ControlDeStock
   
     public partial class ControlDeStock : UserControl
     {
-        private ICollectionView view;
+      
         private string currentSort;
         private bool isAscending = true;
         public ControlDeStock()
@@ -167,6 +167,124 @@ namespace TFG.ControlDeStock
         }
 
 
+        private void ControlDeStockListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            // Obtiene la posición del cursor
+            var mousePos = Mouse.GetPosition(ControlDeStockListView);
+            var item = ControlDeStockListView.InputHitTest(mousePos) as ListViewItem;
+
+
+            if (item == null)
+            {
+                e.Handled = true; 
+            }
+        }
+
+
+
+        private void MandarOrdenesButton_Click(object sender, RoutedEventArgs e)
+        {
+            var productoSeleccionado = ControlDeStockListView.SelectedItem as Producto;
+
+            if (productoSeleccionado == null)
+            {
+                MessageBox.Show("Por favor, seleccione un producto.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            using (var conexion = new Conexion())
+            {
+                try
+                {
+                    conexion.AbrirConexion();
+                    var connection = conexion.ObtenerConexion();
+
+                    // 1. Primero obtenemos el precio y la marca (proveedor) del producto
+                    string queryProducto = @"SELECT Precio, Marca FROM productos WHERE EAN = @ean";
+                    decimal precioVenta = 0;
+                    string proveedor = "";
+
+                    using (var cmdProducto = new MySqlCommand(queryProducto, connection))
+                    {
+                        cmdProducto.Parameters.AddWithValue("@ean", productoSeleccionado.EAN);
+                        using (var reader = cmdProducto.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                precioVenta = Convert.ToDecimal(reader["Precio"]);
+                                proveedor = reader["Marca"].ToString();
+                            }
+                        }
+                    }
+
+                    // Calculamos el precio de compra (80% del precio de venta como ejemplo)
+                    decimal precioCompra = Math.Round(precioVenta * 0.8m, 2);
+
+                    // 2. Buscamos si existe una orden abierta para este proveedor
+                    string queryOrdenExistente = @"
+                SELECT Id 
+                FROM OrdenesDeCompra 
+                WHERE Proveedor = @proveedor 
+                AND Estado != 'Entregado'
+                ORDER BY FechaApertura DESC 
+                LIMIT 1";
+
+                    int ordenId;
+                    using (var cmdOrden = new MySqlCommand(queryOrdenExistente, connection))
+                    {
+                        cmdOrden.Parameters.AddWithValue("@proveedor", proveedor);
+                        var result = cmdOrden.ExecuteScalar();
+
+                        if (result == null) // No existe orden abierta
+                        {
+                            // 3. Creamos una nueva orden
+                            string insertOrden = @"
+                        INSERT INTO OrdenesDeCompra (NumeroOrden, Proveedor, Estado) 
+                        VALUES (@numeroOrden, @proveedor, 'Pendiente');
+                        SELECT LAST_INSERT_ID();";
+
+                            using (var cmdNuevaOrden = new MySqlCommand(insertOrden, connection))
+                            {
+                                string numeroOrden = $"OC-{DateTime.Now:yyyyMMdd}-{new Random().Next(1000, 9999)}";
+                                cmdNuevaOrden.Parameters.AddWithValue("@numeroOrden", numeroOrden);
+                                cmdNuevaOrden.Parameters.AddWithValue("@proveedor", proveedor);
+                                ordenId = Convert.ToInt32(cmdNuevaOrden.ExecuteScalar());
+                            }
+                        }
+                        else
+                        {
+                            ordenId = Convert.ToInt32(result);
+                        }
+                    }
+
+                    // 4. Insertamos el detalle de la orden
+                    string insertDetalle = @"
+                INSERT INTO DetallesOrdenDeCompra 
+                (OrdenDeCompraId, ProductoId, EAN, Cantidad, PrecioUnitario)
+                VALUES 
+                (@ordenId, (SELECT Id FROM productos WHERE EAN = @ean), @ean, 1, @precioUnitario)";
+
+                    using (var cmdDetalle = new MySqlCommand(insertDetalle, connection))
+                    {
+                        cmdDetalle.Parameters.AddWithValue("@ordenId", ordenId);
+                        cmdDetalle.Parameters.AddWithValue("@ean", productoSeleccionado.EAN);
+                        cmdDetalle.Parameters.AddWithValue("@precioUnitario", precioCompra);
+
+                        cmdDetalle.ExecuteNonQuery();
+                    }
+
+                    MessageBox.Show($"Producto añadido correctamente a la orden de compra #{ordenId}", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al procesar la orden: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                finally
+                {
+                    conexion.CerrarConexion();
+                }
+            }
+        }
 
 
 

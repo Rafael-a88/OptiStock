@@ -1,0 +1,226 @@
+﻿<UserControl x:Class="TFG.Trabajadores.Trabajadores"
+             x:Name="TrabajadoresView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TFG"
+             mc:Ignorable="d" 
+             Width="Auto" Height="Auto">
+    <UserControl.Resources>
+        <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Style TargetType="Button" x:Key="CatalogoStyle">
+            <Setter Property="Background" Value="DodgerBlue"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="BorderBrush" Value="DarkBlue"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="LightSkyBlue"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="Button" x:Key="BotonVerdeStyle">
+            <Setter Property="Background" Value="Green"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="BorderBrush" Value="DarkGreen"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="LightGreen"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <StackPanel Margin="0" Background="SkyBlue">
+            <TextBlock Text="Catálogo de Trabajadores" FontSize="24" FontWeight="Bold" Margin="50,50,0,10"/>
+
+            <Grid>
+                <TextBox x:Name="BuscarTextBox" Width="350" Margin="0,0,0,10"  
+                         GotFocus="BuscarTextBox_GotFocus" 
+                         LostFocus="BuscarTextBox_LostFocus" 
+                         Text="Introduce el trabajador por ID, Nombre, DNI o Categoría" 
+                         TextAlignment="Center"
+                         Foreground="Gray"/>
+            </Grid>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Buscar" Width="100" Click="BuscarButton_Click" Height="35" Style="{StaticResource CatalogoStyle}"/>
+                <Button Content="Refrescar" Width="100" Click="RefrescarButton_Click" Height="35" Margin="10,0,0,0" Style="{StaticResource CatalogoStyle}"/>
+            </StackPanel>
+
+
+            <ListView x:Name="TrabajadoresListView" Margin="50,10,50,0" MaxHeight="450" MouseDoubleClick="TrabajadoresListView_MouseDoubleClick" Background="Linen">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="50">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="ID" MouseDown="Header_Click" Tag="Id" 
+                             HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Id}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Width="150">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="Nombre" MouseDown="Header_Click" Tag="Nombre" 
+                             HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding NombreCompleto}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Width="100">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="DNI" MouseDown="Header_Click" Tag="DNI" 
+                             HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding DNI}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Width="150">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="Teléfono" MouseDown="Header_Click" Tag="Telefono" 
+                             HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Telefono}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Width="100">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="Salario" MouseDown="Header_Click" Tag="Salario" 
+                             HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Salario, StringFormat={}{0:N2}€}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Width="150">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="Categoría" MouseDown="Header_Click" Tag="CategoriaProfesional" 
+                             HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding CategoriaProfesional}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Width="120">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="Fecha Contratación" MouseDown="Header_Click" Tag="FechaContratacion" 
+                             HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding FechaContratacion, StringFormat={}{0:dd/MM/yyyy}}" 
+                                 TextAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Width="150">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="Número SS" MouseDown="Header_Click" Tag="NumeroSeguridadSocial" 
+                             HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding NumeroSeguridadSocial}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Width="150">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="Usuario" MouseDown="Header_Click" Tag="Usuario" HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Usuario}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+
+                <!-- Estilo para las filas del ListView -->
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="Margin" Value="4"/>
+                        <Setter Property="Background" Value="Linen"/>
+                        <Setter Property="BorderBrush" Value="Blue"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                <Button Content="Agregar Trabajador" Width="150" Height="35" Click="AgregarTrabajadorButton_Click" Style="{StaticResource CatalogoStyle}"/>
+                <Button Content="Modificar Trabajador" Width="150" Height="35" Margin="10,0,0,0" Click="ModificarTrabajadorButton_Click" Style="{StaticResource CatalogoStyle}"/>
+                <Button Content="Eliminar Trabajador" Width="150" Height="35" Margin="10,0,0,0" Click="EliminarTrabajadorButton_Click" Style="{StaticResource CatalogoStyle}"/>
+                <Button Content="Exportar a Excel" Width="150" Height="35" Margin="10,0,0,0" Click="ExportarButton_Click" Style="{StaticResource BotonVerdeStyle}"/>
+            </StackPanel>
+
+        </StackPanel>
+    </Grid>
+</UserControl>
