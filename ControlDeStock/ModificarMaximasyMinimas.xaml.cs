@@ -78,5 +78,16 @@ namespace TFG.ControlDeStock
             }
         }
 
+        private void CancelarCambiosButton_Click(object sender, EventArgs e)
+        {
+            // Cambiar el contenido del ContentControl a la vista de Control de Stock
+            var controlStockView = new ControlDeStock();
+            // Asigna la nueva vista al ContentControl
+            var parentWindow = Window.GetWindow(this) as Principal; 
+            if (parentWindow != null)
+            {
+                parentWindow.ContenidoPrincipal.Content = controlStockView;
+            }
+        }
     }
 }

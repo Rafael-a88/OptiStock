@@ -201,10 +201,31 @@ namespace TFG
                         command.Parameters.AddWithValue("@numeroDocumento", numeroDocumento);
                         command.Parameters.AddWithValue("@productoId", producto.ProductoId);
                         command.Parameters.AddWithValue("@cantidad", producto.Cantidad);
+
+                        // Ejecutar la inserción
                         command.ExecuteNonQuery();
+
+                        // Agregar log de inserción correcta
+                        Console.WriteLine($"Inserción correcta historial de venta: Producto ID {producto.ProductoId}, Cantidad {producto.Cantidad}, Número de Documento {numeroDocumento}");
                     }
                     conexion.CerrarConexion();
                 }
+
+                // Insertar en Movimientos
+                using (var conexion = new Conexion())
+                {
+                    conexion.AbrirConexion();
+                    foreach (var producto in productosEnVenta)
+                    {
+                        var command = new MySqlCommand("INSERT INTO Movimientos (ProductoId, TipoMovimiento, Cantidad) VALUES (@productoId, 'Venta Física', @cantidad);", conexion.ObtenerConexion());
+                        command.Parameters.AddWithValue("@productoId", producto.ProductoId);
+                        command.Parameters.AddWithValue("@cantidad", producto.Cantidad);
+                        command.ExecuteNonQuery();
+
+                        Console.WriteLine($"Inserción correcta en movimientos: Producto ID {producto.ProductoId}, Cantidad {producto.Cantidad}");
+                    }
+                }
+
 
                 RegularizarStock(productosEnVenta);
 

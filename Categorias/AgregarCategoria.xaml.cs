@@ -92,5 +92,18 @@ namespace TFG.Categorias
         }
 
 
+        private void CancelarCategoria_Click(object sender, RoutedEventArgs e)
+        {
+            // Cambiar el contenido del ContentControl a la vista de categorías
+            var categoriasView = new CategoriasView(); 
+                                                     
+            var parentWindow = Window.GetWindow(this) as Principal; 
+            if (parentWindow != null)
+            {
+                parentWindow.ContenidoPrincipal.Content = categoriasView;
+            }
+        }
+
+
     }
 }

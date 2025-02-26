@@ -36,13 +36,12 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <TextBlock Text="Nominas" FontSize="24" FontWeight="Bold" Margin="50,50,0,0" HorizontalAlignment="Left" Width="214"/>
+        <TextBlock Text="Nóminas" FontSize="24" FontWeight="Bold" Margin="50,50,0,0" HorizontalAlignment="Left" Width="214"/>
 
-        <StackPanel Margin="150,170,150,0" Width="550">
+        <StackPanel Margin="150,170,150,0" Width="620">
             <TextBlock Text="Nombre y Apellidos del trabajador:" FontSize="16" Margin="0,0,0,5"/>
             <ComboBox x:Name="NombreNomina" FontSize="16" Padding="5" />
 
-            <!-- Añadir el nuevo TextBlock para "Mes" -->
             <TextBlock Text="Mes:" FontSize="16" Margin="0,10,0,5"/>
             <ComboBox x:Name="MesNomina" FontSize="16" Padding="5">
                 <ComboBoxItem Content="Enero"/>
@@ -61,6 +60,8 @@
 
             <TextBlock Text="Año:" FontSize="16" Margin="0,10,0,5"/>
             <ComboBox x:Name="AñoNomina" FontSize="16" Padding="5">
+                <ComboBoxItem Content="2011"/>
+                <ComboBoxItem Content="2012"/>
                 <ComboBoxItem Content="2013"/>
                 <ComboBoxItem Content="2014"/>
                 <ComboBoxItem Content="2015"/>
@@ -73,12 +74,19 @@
                 <ComboBoxItem Content="2022"/>
                 <ComboBoxItem Content="2023"/>
                 <ComboBoxItem Content="2024"/>
+                <ComboBoxItem Content="2025"/>
             </ComboBox>
 
+            
+            <!-- Campos para Salario Bruto, Deducciones y Salario Neto en una misma línea -->
+            <StackPanel Orientation="Horizontal" Margin="0,30,0,5">
+                <TextBlock Text="Irpf:" FontSize="16" Margin="0,0,5,0"/>
+                <TextBox x:Name="IrpfTextBox" FontSize="16" Width="100" Padding="5" Margin="0,0,10,0"/>
+            </StackPanel>
+
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
-                <Button Content="Generar Nomina" Style="{StaticResource NominasStyle}" Width="150" Height="35" Click="GenerarNomina_click"/>
+                <Button Content="Generar Nómina" Style="{StaticResource NominasStyle}" Width="150" Height="35" Click="GenerarNomina_click"/>
             </StackPanel>
         </StackPanel>
-
     </Grid>
 </UserControl>

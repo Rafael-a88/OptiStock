@@ -50,9 +50,10 @@ namespace TFG.Nominas
             ComboBoxItem añoSeleccionado = AñoNomina.SelectedItem as ComboBoxItem;
 
             // Validar que todos los campos estén seleccionados
-            if (string.IsNullOrEmpty(nombreSeleccionado) || mesSeleccionado == null || añoSeleccionado == null)
+            if (string.IsNullOrEmpty(nombreSeleccionado) || mesSeleccionado == null ||
+                añoSeleccionado == null || string.IsNullOrEmpty(IrpfTextBox.Text))
             {
-                MessageBox.Show("Por favor, seleccione todos los campos necesarios.");
+                MessageBox.Show("Por favor, seleccione todos los campos necesarios, incluyendo el IRPF.");
                 return;
             }
 
@@ -65,27 +66,31 @@ namespace TFG.Nominas
                 {
                     conexion.AbrirConexion();
 
-                    // Obtener datos del trabajador
-                    var trabajador = ObtenerDatosTrabajador(nombreSeleccionado, mes, año, conexion);
-                    if (trabajador == null)
+                    // Verificar si ya existe una nómina para este mes y año
+                    var nominaExistente = ObtenerDatosTrabajador(nombreSeleccionado, mes, año, conexion);
+                    if (nominaExistente != null)
                     {
-                        MessageBox.Show("No se encontraron los datos del trabajador.");
+                        MessageBox.Show($"Ya existe una nómina para {nombreSeleccionado} en {mes} de {año}");
+                        string rutaPDF = GenerarPDFNomina(nominaExistente);
+                        System.Diagnostics.Process.Start(rutaPDF);
                         return;
                     }
 
-                    // Generar el PDF
-                    string rutaPDF = GenerarPDFNomina(trabajador);
-
-                    // Mostrar mensaje de éxito y abrir el PDF
-                    MessageBox.Show("Nómina generada correctamente.");
-                    System.Diagnostics.Process.Start(rutaPDF);
+                    // Si no existe, generar nueva nómina
+                    var nuevaNomina = GenerarNuevaNomina(nombreSeleccionado, mes, año, conexion);
+                    if (nuevaNomina != null)
+                    {
+                        string rutaPDF = GenerarPDFNomina(nuevaNomina);
+                        System.Diagnostics.Process.Start(rutaPDF);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al generar la nómina: " + ex.Message);
+                    MessageBox.Show("Error al procesar la nómina: " + ex.Message);
                 }
             }
         }
+
 
         private Trabajadores ObtenerDatosTrabajador(string nombreCompleto, string mes, int año, Conexion conexion)
         {
@@ -132,11 +137,11 @@ namespace TFG.Nominas
                             Direccion = reader.GetString("Direccion"),
                             FechaContratacion = reader.GetDateTime("FechaContratacion"),
                             Salario = reader.GetDecimal("Salario"),
+                            NumeroSeguridadSocial = reader.GetString("NumeroSeguridadSocial"),
+                            CategoriaProfesional = reader.GetInt32("CategoriaProfesional"),
                             SalarioBruto = reader.GetDecimal("SalarioBruto"),
                             Deducciones = reader.GetDecimal("Deducciones"),
                             SalarioNeto = reader.GetDecimal("SalarioNeto"),
-                            NumeroSeguridadSocial = reader.GetString("NumeroSeguridadSocial"),
-                            CategoriaProfesional = reader.GetInt32("CategoriaProfesional"),
                             Mes = mes,
                             Año = año
                         };
@@ -146,12 +151,141 @@ namespace TFG.Nominas
             return null;
         }
 
+        private Trabajadores GenerarNuevaNomina(string nombreCompleto, string mes, int año, Conexion conexion)
+        {
+            // Obtener el porcentaje de IRPF del TextBox (asegúrate de que existe un TextBox llamado IrpfTextBox)
+            decimal porcentajeIRPF;
+            if (!decimal.TryParse(IrpfTextBox.Text, out porcentajeIRPF))
+            {
+                MessageBox.Show("Por favor, ingrese un porcentaje de IRPF válido.");
+                return null;
+            }
+
+            string queryNominaExistente = @"
+        SELECT 
+            t.Id,
+            t.NombreCompleto,
+            t.DNI,
+            t.FechaNacimiento,
+            t.Telefono,
+            t.Email,
+            t.Direccion,
+            t.FechaContratacion,
+            t.Salario,
+            t.NumeroSeguridadSocial,
+            t.CategoriaProfesional,
+            n.SalarioBruto,
+            n.Deducciones,
+            n.SalarioNeto
+        FROM Trabajadores t
+        LEFT JOIN Nomina n ON t.Id = n.TrabajadorId
+        WHERE t.NombreCompleto = @nombre
+        ORDER BY n.Anio DESC, n.Mes DESC
+        LIMIT 1";
+
+            decimal salarioBruto = 0;
+            int trabajadorId = 0;
+            Trabajadores trabajador = null;
+
+            using (var cmdConsulta = new MySqlCommand(queryNominaExistente, conexion.ObtenerConexion()))
+            {
+                cmdConsulta.Parameters.AddWithValue("@nombre", nombreCompleto);
+
+                using (var reader = cmdConsulta.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        trabajadorId = reader.GetInt32("Id");
+                        salarioBruto = reader.IsDBNull(reader.GetOrdinal("SalarioBruto")) ?
+                                      reader.GetDecimal("Salario") : reader.GetDecimal("SalarioBruto");
+
+                        // Calcular deducciones
+                        decimal contingenciasComunes = salarioBruto * 0.047m; // 4.7%
+                        decimal desempleo = salarioBruto * 0.0155m; // 1.55%
+                        decimal irpf = salarioBruto * (porcentajeIRPF / 100m);
+                        decimal totalDeducciones = contingenciasComunes + desempleo + irpf;
+                        decimal salarioNeto = salarioBruto - totalDeducciones;
+
+                        trabajador = new Trabajadores
+                        {
+                            Id = trabajadorId,
+                            NombreCompleto = reader.GetString("NombreCompleto"),
+                            DNI = reader.GetString("DNI"),
+                            FechaNacimiento = reader.GetDateTime("FechaNacimiento"),
+                            Telefono = reader.GetString("Telefono"),
+                            Email = reader.GetString("Email"),
+                            Direccion = reader.GetString("Direccion"),
+                            FechaContratacion = reader.GetDateTime("FechaContratacion"),
+                            Salario = reader.GetDecimal("Salario"),
+                            NumeroSeguridadSocial = reader.GetString("NumeroSeguridadSocial"),
+                            CategoriaProfesional = reader.GetInt32("CategoriaProfesional"),
+                            SalarioBruto = salarioBruto,
+                            Deducciones = totalDeducciones,
+                            SalarioNeto = salarioNeto,
+                            Mes = mes,
+                            Año = año
+                        };
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se encontraron datos previos del trabajador para generar la nómina.");
+                        return null;
+                    }
+                }
+            }
+
+            // Insertar la nueva nómina
+            string insertQuery = @"
+        INSERT INTO Nomina (TrabajadorId, Mes, Anio, SalarioBruto, Deducciones, SalarioNeto)
+        VALUES (@trabajadorId, @mes, @año, @salarioBruto, @deducciones, @salarioNeto)";
+
+            using (var cmdInsert = new MySqlCommand(insertQuery, conexion.ObtenerConexion()))
+            {
+                cmdInsert.Parameters.AddWithValue("@trabajadorId", trabajadorId);
+                cmdInsert.Parameters.AddWithValue("@mes", mes);
+                cmdInsert.Parameters.AddWithValue("@año", año);
+                cmdInsert.Parameters.AddWithValue("@salarioBruto", trabajador.SalarioBruto);
+                cmdInsert.Parameters.AddWithValue("@deducciones", trabajador.Deducciones);
+                cmdInsert.Parameters.AddWithValue("@salarioNeto", trabajador.SalarioNeto);
+
+                try
+                {
+                    cmdInsert.ExecuteNonQuery();
+                    MessageBox.Show("Nueva nómina generada con éxito.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al insertar la nueva nómina: {ex.Message}");
+                    return null;
+                }
+            }
+
+            return trabajador;
+        }
+
+
+
         public string GenerarPDFNomina(Trabajadores trabajador)
         {
-            string rutaPDF = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                $"Nomina_{trabajador.NombreCompleto}_{trabajador.Mes}_{trabajador.Año}.pdf"
-            );
+
+            // Obtener el porcentaje de IRPF del TextBox
+            decimal porcentajeIRPF;
+            if (!decimal.TryParse(IrpfTextBox.Text, out porcentajeIRPF))
+            {
+                porcentajeIRPF = 0; // valor por defecto si hay error
+            }
+
+            // Crear la estructura de carpetas en el escritorio
+            string escritorioPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string nominasPath = Path.Combine(escritorioPath, "Nominas");
+            string trabajadorPath = Path.Combine(nominasPath, trabajador.NombreCompleto);
+            string mesAñoPath = Path.Combine(trabajadorPath, $"{trabajador.Mes}_{trabajador.Año}");
+            string rutaPDF = Path.Combine(mesAñoPath, $"Nomina_{trabajador.NombreCompleto}_{trabajador.Mes}_{trabajador.Año}.pdf");
+
+            // Crear las carpetas si no existen
+            Directory.CreateDirectory(nominasPath);
+            Directory.CreateDirectory(trabajadorPath);
+            Directory.CreateDirectory(mesAñoPath);
 
             using (FileStream fs = new FileStream(rutaPDF, FileMode.Create))
             {
@@ -212,7 +346,7 @@ namespace TFG.Nominas
 
                 AddDatosTrabajador(datosTable, "Trabajador:", trabajador.NombreCompleto);
                 AddDatosTrabajador(datosTable, "DNI:", trabajador.DNI);
-                AddDatosTrabajador(datosTable, "Nº Afiliación SS:", trabajador.NumeroSeguridadSocial); 
+                AddDatosTrabajador(datosTable, "Nº Afiliación SS:", trabajador.NumeroSeguridadSocial);
                 AddDatosTrabajador(datosTable, "Categoría: Grupo:", trabajador.CategoriaProfesional.ToString());
                 document.Add(datosTable);
 
@@ -231,7 +365,7 @@ namespace TFG.Nominas
                 devengosTable.AddCell(importeHeader);
 
                 // Añadir conceptos de devengos
-                AddDevengo(devengosTable, "Salario Base", trabajador.Salario.ToString("C"));
+                AddDevengo(devengosTable, "Salario Base", trabajador.SalarioBruto.ToString("C"));
                 AddDevengo(devengosTable, "Complementos", "0,00 €");
 
                 // Total devengos
@@ -260,7 +394,7 @@ namespace TFG.Nominas
 
                 AddDeduccion(deduccionesTable, "Contingencias comunes (4.7%)", contingenciasComunes.ToString("C"));
                 AddDeduccion(deduccionesTable, "Desempleo (1.55%)", desempleo.ToString("C"));
-                AddDeduccion(deduccionesTable, "IRPF", irpf.ToString("C"));
+                AddDeduccion(deduccionesTable, $"IRPF ({porcentajeIRPF}%)", irpf.ToString("C"));
 
                 // Total deducciones
                 PdfPCell totalDeduccionesLabel = new PdfPCell(new Phrase("TOTAL DEDUCCIONES", headerFont));
@@ -295,7 +429,6 @@ namespace TFG.Nominas
                 firmasTable.AddCell(new PdfPCell(new Phrase("Firma del trabajador")) { Border = Rectangle.ALIGN_TOP });
                 document.Add(firmasTable);
 
-
                 document.Close();
             }
             return rutaPDF;
@@ -309,20 +442,21 @@ namespace TFG.Nominas
             valorCell.Border = Rectangle.NO_BORDER;
             table.AddCell(labelCell);
             table.AddCell(valorCell);
-
         }
 
         private void AddDevengo(PdfPTable table, string concepto, string importe)
         {
             PdfPCell conceptoCell = new PdfPCell(new Phrase(concepto, new Font(BaseFont.CreateFont(), 10)));
             PdfPCell importeCell = new PdfPCell(new Phrase(importe, new Font(BaseFont.CreateFont(), 10)));
+            conceptoCell.Border = Rectangle.NO_BORDER;
+            importeCell.Border = Rectangle.NO_BORDER;
             table.AddCell(conceptoCell);
             table.AddCell(importeCell);
         }
 
         private void AddDeduccion(PdfPTable table, string concepto, string importe)
         {
-            AddDevengo(table, concepto, importe);
+            AddDevengo(table, concepto, importe); // Reutilizamos el método AddDevengo ya que el formato es el mismo
         }
 
     }

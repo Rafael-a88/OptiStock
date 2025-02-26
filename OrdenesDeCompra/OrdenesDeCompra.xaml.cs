@@ -1,5 +1,13 @@
 ﻿using MySqlConnector;
 using System;
+
+using System.Collections.ObjectModel;
+using System.Data;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,16 +22,20 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
 namespace TFG.OrdenesDeCompra
 {
     public partial class OrdenesDeCompra : UserControl
     {
-        private List<PedidoDeCompra> _pedidosDeCompra; // Lista de pedidos de compra
+
+        private ObservableCollection<PedidoDeCompra> _pedidosDeCompra; // Lista de pedidos de compra
+
 
         public OrdenesDeCompra()
         {
             InitializeComponent();
-            _pedidosDeCompra = new List<PedidoDeCompra>(); // Inicializar la lista de pedidos de compra
+
+            _pedidosDeCompra = new ObservableCollection<PedidoDeCompra>(); // Inicializar la lista de pedidos de compra
             CargarPedidosDeCompra(); // Cargar los pedidos de compra iniciales
         }
 
@@ -37,20 +49,39 @@ namespace TFG.OrdenesDeCompra
                     MySqlCommand command = new MySqlCommand("SELECT * FROM OrdenesDeCompra", conexion.ObtenerConexion());
                     MySqlDataReader reader = command.ExecuteReader();
 
+                    // Limpiar la colección antes de agregar nuevos elementos
+                    _pedidosDeCompra.Clear();
+
                     while (reader.Read())
                     {
-                        _pedidosDeCompra.Add(new PedidoDeCompra
+                        var pedido = new PedidoDeCompra
+
                         {
                             ID = (int)reader["Id"],
                             NumeroOrden = reader["NumeroOrden"].ToString(),
                             Proveedor = reader["Proveedor"].ToString(),
                             Estado = reader["Estado"].ToString(),
                             FechaApertura = (DateTime)reader["FechaApertura"]
-                        });
+
+                        };
+
+                        // Agregar pedido a la colección
+                        _pedidosDeCompra.Add(pedido);
                     }
 
                     reader.Close();
-                    OrdenesDeCompraListView.ItemsSource = _pedidosDeCompra;
+                    OrdenesDeCompraListView.ItemsSource = _pedidosDeCompra; // Asignar la colección al ListView
+
+                    // Cambiar el color de fondo de las filas según el estado
+                    foreach (var item in _pedidosDeCompra)
+                    {
+                        var listViewItem = (ListViewItem)OrdenesDeCompraListView.ItemContainerGenerator.ContainerFromItem(item);
+                        if (listViewItem != null && item.Estado == "Mandado")
+                        {
+                            listViewItem.Background = new SolidColorBrush(Color.FromArgb(128, 0, 255, 0));
+                        }
+                    }
+
                 }
                 catch (Exception ex)
                 {
@@ -59,16 +90,22 @@ namespace TFG.OrdenesDeCompra
             }
         }
 
+
+
+
         private void BuscarButton_Click(object sender, RoutedEventArgs e)
         {
             // Implementar la lógica de búsqueda de pedidos de compra
-            string busqueda = BuscarTextBox.Text;
-            // Filtrar la lista de pedidos de compra y asignar el resultado a la fuente de datos del ListView
-            OrdenesDeCompraListView.ItemsSource = _pedidosDeCompra.Where(o => o.ID.ToString().Contains(busqueda) ||
-                                                                               o.NumeroOrden.Contains(busqueda) ||
-                                                                               o.Proveedor.Contains(busqueda) ||
-                                                                               o.Estado.Contains(busqueda) ||
-                                                                               o.FechaApertura.ToString().Contains(busqueda));
+            string busqueda = BuscarTextBox.Text.ToLower(); // Convertir a minúsculas para búsqueda insensible
+            var resultados = _pedidosDeCompra.Where(o => o.ID.ToString().Contains(busqueda) ||
+                                                         o.NumeroOrden.ToLower().Contains(busqueda) ||
+                                                         o.Proveedor.ToLower().Contains(busqueda) ||
+                                                         o.Estado.ToLower().Contains(busqueda) ||
+                                                         o.FechaApertura.ToString("dd/MM/yyyy").Contains(busqueda)).ToList();
+
+            OrdenesDeCompraListView.ItemsSource = resultados; // Asignar los resultados filtrados al ListView
+
+
         }
 
         private void BuscarTextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -92,7 +129,6 @@ namespace TFG.OrdenesDeCompra
         }
 
 
-
         private void RefrescarButton_Click(object sender, RoutedEventArgs e)
         {
             // Implementar la lógica de actualización de la lista de pedidos de compra
@@ -101,26 +137,53 @@ namespace TFG.OrdenesDeCompra
 
         private void MandarOrdenButton_Click(object sender, RoutedEventArgs e)
         {
-            // Implementar la lógica de envío del pedido de compra al proveedor
+
             PedidoDeCompra pedidoSeleccionado = (PedidoDeCompra)OrdenesDeCompraListView.SelectedItem;
             if (pedidoSeleccionado != null)
             {
-                // Enviar el pedido de compra al proveedor
-                pedidoSeleccionado.Estado = "Enviada";
-                // Actualizar la lista de pedidos de compra
-                CargarPedidosDeCompra();
+                // Cambiar el estado a "Mandado"
+                pedidoSeleccionado.Estado = "Mandado";
+
+                // Actualizar el estado en la base de datos
+                using (Conexion conexion = new Conexion())
+                {
+                    try
+                    {
+                        conexion.AbrirConexion();
+                        MySqlCommand command = new MySqlCommand("UPDATE OrdenesDeCompra SET Estado = @estado WHERE Id = @id", conexion.ObtenerConexion());
+                        command.Parameters.AddWithValue("@estado", pedidoSeleccionado.Estado);
+                        command.Parameters.AddWithValue("@id", pedidoSeleccionado.ID);
+                        command.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error al actualizar el estado en la base de datos: " + ex.Message);
+                    }
+                }
+
+                // Cambiar el color de fondo de la fila seleccionada a verde
+                var listViewItem = (ListViewItem)OrdenesDeCompraListView.ItemContainerGenerator.ContainerFromItem(pedidoSeleccionado);
+                if (listViewItem != null)
+                {
+                    listViewItem.Background = new SolidColorBrush(Color.FromArgb(128, 0, 255, 0));
+                }
+
+                // Mostrar un mensaje con la información requerida
+                string mensaje = $"Fecha de Envío: {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}\n" +
+                                 $"Número de Orden: {pedidoSeleccionado.NumeroOrden}\n" +
+                                 $"Proveedor: {pedidoSeleccionado.Proveedor}";
+                MessageBox.Show(mensaje, "Detalles del Envío", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
+
         private void OrdenesDeCompraListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            // Implementar la lógica de visualización de los detalles del pedido de compra
             PedidoDeCompra pedidoSeleccionado = (PedidoDeCompra)OrdenesDeCompraListView.SelectedItem;
             if (pedidoSeleccionado != null)
             {
-                // Abrir la vista de detalles del pedido de compra
-                // Por ejemplo, crear una nueva instancia de un UserControl "DetallesPedidoDeCompra"
-                // y mostrarlo en un contenedor adecuado de la interfaz de usuario.
+                DetallesOrdenCompra detallesVentana = new DetallesOrdenCompra(pedidoSeleccionado.ID, pedidoSeleccionado.NumeroOrden);
+                detallesVentana.ShowDialog(); // Mostrar como un diálogo modal
             }
         }
     }

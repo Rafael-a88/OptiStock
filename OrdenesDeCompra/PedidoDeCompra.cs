@@ -15,4 +15,6 @@ namespace TFG.OrdenesDeCompra
         public DateTime FechaApertura { get; set; }
 
     }
+
 }
+
