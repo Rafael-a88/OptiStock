@@ -116,42 +116,60 @@
                 </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="EAN" Width="150">
+                        <GridViewColumn Width="150">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="EAN" MouseDown="Header_Click" Tag="EAN" HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding EAN}" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Nombre" Width="410">
+                        <GridViewColumn Width="410">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="Nombre" MouseDown="Header_Click" Tag="Nombre" HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Nombre}" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Stock" Width="80">
+                        <GridViewColumn Width="80">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="Stock" MouseDown="Header_Click" Tag="Stock" HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Stock}" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Cantidad Máxima" Width="120">
+                        <GridViewColumn Width="120">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="Cantidad Máxima" MouseDown="Header_Click" Tag="CantidadMaxima" HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding CantidadMaxima}" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Cantidad Mínima" Width="120">
+                        <GridViewColumn Width="120">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="Cantidad Mínima" MouseDown="Header_Click" Tag="CantidadMinima" HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding CantidadMinima}" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Proveedor" Width="300">
+                        <GridViewColumn Width="300">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="Proveedor" MouseDown="Header_Click" Tag="Marca" HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Marca}" TextAlignment="Center"/>
@@ -160,11 +178,12 @@
                         </GridViewColumn>
                     </GridView>
                 </ListView.View>
-            </ListView>
 
+            </ListView>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
                 <Button Content="Modificar Máximas y Mínimas" Width="200" Height="35" Click="ModificarMaximasyMinimasButton_Click" x:Name="ModificarMaximasyMinimasButton" Style="{StaticResource ControlDeStockStyle}"/>
+                <Button Content="Mostrar Posibles Pedidos" Width="200" Height="35" Margin="10,0,0,0" Click="MostrarPosiblesPedidosButton_Click" Style="{StaticResource ControlDeStockStyle}"/>
                 <Button Content="Exportar a Excel" Width="150" Height="35" Margin="10,0,0,0" Click="ExportarButton_Click" Style="{StaticResource BotonVerdeStyle}"/>
             </StackPanel>
         </StackPanel>

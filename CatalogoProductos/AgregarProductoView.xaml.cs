@@ -76,7 +76,7 @@ namespace TFG
             }
         }
 
-        private void GuardarButton_Click(object sender, RoutedEventArgs e)
+        public void GuardarButton_Click(object sender, RoutedEventArgs e)
         {
             // Validar entradas
             if (string.IsNullOrWhiteSpace(NombreTextBox.Text) ||
@@ -165,7 +165,7 @@ namespace TFG
             }
         }
 
-        private int ObtenerPrimerIdLibre(Conexion conexion)
+        public int ObtenerPrimerIdLibre(Conexion conexion)
         {
             // Obtener todos los IDs existentes
             var idsExistentes = new HashSet<int>();

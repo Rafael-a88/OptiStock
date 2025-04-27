@@ -76,7 +76,7 @@
                 <TextBox x:Name="BuscarTextBox" Width="350" Margin="0,0,0,10"  
                          GotFocus="BuscarTextBox_GotFocus" 
                          LostFocus="BuscarTextBox_LostFocus" 
-                         Text="Introduce el trabajador por ID, Nombre, DNI o Categoría" 
+                         Text="Introduce el trabajador por ID, Nombre, DNI, Categoría, Departamento o Usuario" 
                          TextAlignment="Center"
                          Foreground="Gray"/>
             </Grid>
@@ -104,7 +104,7 @@
 
                         <GridViewColumn Width="150">
                             <GridViewColumn.Header>
-                                <TextBlock Text="Nombre" MouseDown="Header_Click" Tag="Nombre" 
+                                <TextBlock Text="Nombre" MouseDown="Header_Click" Tag="NombreCompleto" 
                              HorizontalAlignment="Center"/>
                             </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
@@ -162,6 +162,18 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
 
+                        <GridViewColumn Width="150">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="Departamento" MouseDown="Header_Click" Tag="Departamento" 
+                             HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Departamento}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
                         <GridViewColumn Width="120">
                             <GridViewColumn.Header>
                                 <TextBlock Text="Fecha Contratación" MouseDown="Header_Click" Tag="FechaContratacion" 
@@ -194,6 +206,17 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Usuario}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Width="150">
+                            <GridViewColumn.Header>
+                                <TextBlock Text="Contraseña" MouseDown="Header_Click" Tag="Contraseña" HorizontalAlignment="Center"/>
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Contraseña}" TextAlignment="Center"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>

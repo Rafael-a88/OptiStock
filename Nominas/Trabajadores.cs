@@ -24,6 +24,8 @@ namespace TFG.Nominas
         public int CategoriaProfesional { get; set; }
         public decimal PorcentajeIRPF { get; set; }
 
+        public string Departamento { get; set; }
+
 
 
         // Propiedades de la tabla Nomina

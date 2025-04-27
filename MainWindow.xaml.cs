@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Media;
 using OfficeOpenXml;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 
 
 namespace TFG
@@ -39,23 +40,43 @@ namespace TFG
             string usuario = UsuarioTextBox.Text;
             string contrasena = ContrasenaPasswordBox.Password;
 
-            // Condición corregida
-            if (
-                (usuario == "auxiliaesquinarafael@gmail.com" ||
-                 usuario == "antonio92guerrerogarcia@gmail.com" ||
-                 usuario == "a")
-                && (contrasena == "admin1234" || contrasena == "a")
-            )
+            try
             {
-                // Crear una nueva instancia de la ventana Principal
-                Principal principalWindow = new Principal();
-                principalWindow.Show(); // Mostrar la nueva ventana
-                this.Close(); // Cerrar la ventana actual (MainWindow)
+                // Primero intentar obtener el departamento para verificar la conexión
+                DepartamentoManager departamentoManager = new DepartamentoManager();
+                string departamento = departamentoManager.ObtenerDepartamento(usuario, contrasena);
+
+                if (departamento != null)
+                {
+                    // Usuario encontrado en la base de datos
+                    MessageBox.Show($"Bienvenido. Usted pertenece al departamento de: {departamento}", "Inicio de sesión exitoso", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    Principal principalWindow = new Principal(departamento);
+                    principalWindow.Show();
+                    this.Close();
+                }
+                else if ((usuario == "a") && (contrasena == "a"))
+                {
+                    // Credenciales hardcodeadas
+                    string departamentoPredeterminado = "Gerencia";
+                    MessageBox.Show($"Bienvenido. Usted pertenece al departamento de Departamento: {departamentoPredeterminado}",
+                                  "Inicio de sesión exitoso", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    Principal principalWindow = new Principal(departamentoPredeterminado);
+                    principalWindow.Show();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Credenciales incorrectas. Inténtalo de nuevo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Credenciales incorrectas. Inténtalo de nuevo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error al conectar con la base de datos: {ex.Message}", "Error de conexión", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+
     }
 }

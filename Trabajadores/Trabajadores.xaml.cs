@@ -26,12 +26,12 @@ namespace TFG.Trabajadores
             InitializeComponent();
             _mainWindow = mainWindow;
             CargarTrabajadores();
-            BuscarTextBox.Text = "Introduce el trabajador por ID, Nombre, DNI o Categoría";
+            BuscarTextBox.Text = "Introduce el trabajador por ID, Nombre, DNI, Categoría, Departamento o Usuario";
         }
 
         private void BuscarTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (BuscarTextBox.Text == "Introduce el trabajador por ID, Nombre, DNI o Categoría")
+            if (BuscarTextBox.Text == "Introduce el trabajador por ID, Nombre, DNI, Categoría, Departamento o Usuario")
             {
                 BuscarTextBox.Text = "";
                 BuscarTextBox.Foreground = System.Windows.Media.Brushes.Black;
@@ -42,7 +42,7 @@ namespace TFG.Trabajadores
         {
             if (string.IsNullOrWhiteSpace(BuscarTextBox.Text))
             {
-                BuscarTextBox.Text = "Introduce el trabajador por ID, Nombre, DNI o Categoría";
+                BuscarTextBox.Text = "Introduce el trabajador por ID, Nombre, DNI, Categoría, Departamento o Usuario";
                 BuscarTextBox.Foreground = System.Windows.Media.Brushes.Gray;
             }
         }
@@ -130,14 +130,14 @@ namespace TFG.Trabajadores
                     using (StreamWriter sw = new StreamWriter(dlg.FileName, false, Encoding.UTF8))
                     {
                         // Escribir encabezados
-                        sw.WriteLine("ID,Nombre,DNI,Teléfono,Salario,Categoría,Fecha Contratación,Número SS,Usuario");
+                        sw.WriteLine("ID,Nombre,DNI,Teléfono,Salario,Categoría,Departamento,Fecha Contratación,Número SS,Usuario,Contraseña");
 
                         // Escribir datos
                         foreach (var t in trabajadores)
                         {
                             sw.WriteLine($"{t.Id},{t.NombreCompleto},{t.DNI},{t.Telefono}," +
-                                       $"{t.Salario},{t.CategoriaProfesional},{t.FechaContratacion:dd/MM/yyyy}," +
-                                       $"{t.NumeroSeguridadSocial},{t.Usuario}");
+                                       $"{t.Salario},{t.CategoriaProfesional},{t.Departamento},{t.FechaContratacion:dd/MM/yyyy}," +
+                                       $"{t.NumeroSeguridadSocial},{t.Usuario},{t.Contraseña}");
                         }
                     }
                     MessageBox.Show("Exportación completada con éxito.", "Éxito",
@@ -186,7 +186,8 @@ namespace TFG.Trabajadores
                         Usuario = reader.GetString("Usuario"),
                         Contraseña = reader.GetString("Contraseña"),
                         NumeroSeguridadSocial = reader.GetString("NumeroSeguridadSocial"),
-                        CategoriaProfesional = reader.GetInt32("CategoriaProfesional")
+                        CategoriaProfesional = reader.GetInt32("CategoriaProfesional"),
+                        Departamento = reader.GetString("Departamento")
                     };
 
                     trabajadores.Add(trabajador);
@@ -204,10 +205,12 @@ namespace TFG.Trabajadores
                 ModificarTrabajador(trabajadorSeleccionado);
             }
         }
+
         private void ModificarTrabajador(TFG.Nominas.Trabajadores trabajador)
         {
-            
+            // Implementar la lógica de modificación aquí
         }
+
         private void BuscarButton_Click(object sender, RoutedEventArgs e)
         {
             // Filtrar la lista de trabajadores según el texto de búsqueda
@@ -216,7 +219,9 @@ namespace TFG.Trabajadores
                 t.Id.ToString().Contains(busqueda) ||
                 t.NombreCompleto.ToLower().Contains(busqueda) ||
                 t.DNI.ToLower().Contains(busqueda) ||
-                t.CategoriaProfesional.ToString().Contains(busqueda)
+                t.CategoriaProfesional.ToString().Contains(busqueda) ||
+                t.Departamento.ToLower().Contains(busqueda) ||
+                t.Usuario.ToLower().Contains(busqueda)
             ).ToList();
 
             // Asignar la lista filtrada a la ListView
@@ -231,7 +236,7 @@ namespace TFG.Trabajadores
 
         private void AgregarTrabajadorButton_Click(object sender, RoutedEventArgs e)
         {
-            AgregarTrabajadores agregarTrabajadoresView = new AgregarTrabajadores();       
+            AgregarTrabajadores agregarTrabajadoresView = new AgregarTrabajadores();
             ContentControl contenidoPrincipal = this.Parent as ContentControl;
 
             if (contenidoPrincipal != null)
@@ -241,15 +246,27 @@ namespace TFG.Trabajadores
             }
         }
 
-
-
         private void ModificarTrabajadorButton_Click(object sender, RoutedEventArgs e)
         {
-           
+            // Verificar si hay un trabajador seleccionado en la lista
+            if (TrabajadoresListView.SelectedItem is TFG.Nominas.Trabajadores trabajadorSeleccionado) // Mantener como Trabajadores
+            {
+                // Crear una nueva instancia de ModificarTrabajadores pasando el ID del trabajador seleccionado
+                ModificarTrabajadores modificarTrabajadorView = new ModificarTrabajadores(trabajadorSeleccionado.Id);
+
+                // Cambiar el contenido del control principal a la vista de modificación
+                ContentControl contenidoPrincipal = this.Parent as ContentControl;
+                if (contenidoPrincipal != null)
+                {
+                    contenidoPrincipal.Content = modificarTrabajadorView;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Por favor, selecciona un trabajador para modificar.", "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
 
     }
-
-  
 }

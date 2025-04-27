@@ -285,9 +285,6 @@ namespace TFG
             }
         }
 
-
-
-
         private void GenerarPDFTicket(string dniCliente, List<DVenta> productosEnVenta, double totalCompra, DateTime fechaCompra, string nombreEmpresa, string ticketId)
         {
             using (var document = new iTextSharp.text.Document())
@@ -296,7 +293,7 @@ namespace TFG
                 var writer = PdfWriter.GetInstance(document, new FileStream(outputFile, FileMode.Create));
 
                 // Agregar el manejador de eventos para el pie de página
-                writer.PageEvent = new ManejadorPieDePagina("Para devolución de un producto, debera presentar este ticket.");
+                writer.PageEvent = new ManejadorPieDePagina("Para devolución de un producto, deberá presentar este ticket.");
 
                 document.Open();
 
@@ -333,59 +330,69 @@ namespace TFG
                 productTable.WidthPercentage = 100;
                 productTable.SetWidths(new float[] { 100f, 200f, 50f, 100f, 100f });
 
-                // Agregar las celdas con fondo gris claro
+                // Agregar las celdas con fondo gris claro y centrado
                 PdfPCell cell;
                 cell = new PdfPCell(new Phrase("EAN", new Font(Font.FontFamily.HELVETICA, 10)));
                 cell.BackgroundColor = new BaseColor(220, 220, 220);
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 productTable.AddCell(cell);
 
                 cell = new PdfPCell(new Phrase("Producto", new Font(Font.FontFamily.HELVETICA, 10)));
                 cell.BackgroundColor = new BaseColor(220, 220, 220);
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 productTable.AddCell(cell);
 
                 cell = new PdfPCell(new Phrase("Cantidad", new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
                 cell.BackgroundColor = new BaseColor(220, 220, 220);
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 productTable.AddCell(cell);
 
                 cell = new PdfPCell(new Phrase("Precio", new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
                 cell.BackgroundColor = new BaseColor(220, 220, 220);
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 productTable.AddCell(cell);
 
                 cell = new PdfPCell(new Phrase("Total", new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
                 cell.BackgroundColor = new BaseColor(220, 220, 220);
+                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                cell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 productTable.AddCell(cell);
 
-                using (var conexion = new Conexion())
+                foreach (var producto in productosEnVenta)
                 {
-                    conexion.AbrirConexion();
-
-                    foreach (var producto in productosEnVenta)
+                    productTable.AddCell(new PdfPCell(new Phrase(producto.ProductoId.ToString(), new Font(Font.FontFamily.HELVETICA, 10)))
                     {
-                        // Obtener el nombre del producto desde la base de datos
-                        string nombreProducto;
-                        var command = new MySqlCommand("SELECT Nombre FROM Productos WHERE EAN = @ean", conexion.ObtenerConexion());
-                        command.Parameters.AddWithValue("@ean", producto.ProductoId);
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        VerticalAlignment = Element.ALIGN_MIDDLE
+                    });
 
-                        using (var reader = command.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                nombreProducto = reader["Nombre"].ToString();
-                            }
-                            else
-                            {
-                                nombreProducto = "Producto no encontrado";
-                            }
-                        }
+                    productTable.AddCell(new PdfPCell(new Phrase(producto.Nombre, new Font(Font.FontFamily.HELVETICA, 10)))
+                    {
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        VerticalAlignment = Element.ALIGN_MIDDLE
+                    });
 
-                        productTable.AddCell(new Phrase(producto.ProductoId.ToString(), new Font(Font.FontFamily.HELVETICA, 10)));
-                        productTable.AddCell(new Phrase(nombreProducto, new Font(Font.FontFamily.HELVETICA, 10)));
-                        productTable.AddCell(new Phrase(producto.Cantidad.ToString(), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
-                        productTable.AddCell(new Phrase(producto.ValorUnitario.ToString("C2"), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
-                        productTable.AddCell(new Phrase(producto.Subtotal.ToString("C2"), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
-                    }
+                    productTable.AddCell(new PdfPCell(new Phrase(producto.Cantidad.ToString(), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)))
+                    {
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        VerticalAlignment = Element.ALIGN_MIDDLE
+                    });
 
-                    conexion.CerrarConexion();
+                    productTable.AddCell(new PdfPCell(new Phrase(producto.ValorUnitario.ToString("C2"), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)))
+                    {
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        VerticalAlignment = Element.ALIGN_MIDDLE
+                    });
+
+                    productTable.AddCell(new PdfPCell(new Phrase(producto.Subtotal.ToString("C2"), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)))
+                    {
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        VerticalAlignment = Element.ALIGN_MIDDLE
+                    });
                 }
 
                 document.Add(productTable);
@@ -437,13 +444,13 @@ namespace TFG
                 var escritor = PdfWriter.GetInstance(documento, new FileStream(archivoSalida, FileMode.Create));
 
                 // Agregar el manejador de eventos para el pie de página
-                escritor.PageEvent = new ManejadorPieDePagina("Para devolución de un producto, debera presentar esta factura.");
+                escritor.PageEvent = new ManejadorPieDePagina("Para devolución de un producto, deberá presentar esta factura.");
 
                 documento.Open();
 
                 // Agregar el nombre de la empresa en negrita
-                var frasaEmpresa = new Phrase($"{nombreEmpresa}", new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD));
-                var parrafoEmpresa = new Paragraph(frasaEmpresa);
+                var fraseEmpresa = new Phrase($"{nombreEmpresa}", new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD));
+                var parrafoEmpresa = new Paragraph(fraseEmpresa);
                 parrafoEmpresa.Alignment = Element.ALIGN_CENTER;
                 documento.Add(parrafoEmpresa);
 
@@ -479,71 +486,85 @@ namespace TFG
                 tablaProductos.WidthPercentage = 100;
                 tablaProductos.SetWidths(new float[] { 100f, 190f, 60f, 100f, 100f, 100f });
 
-                // Agregar las celdas con fondo gris claro
+                // Agregar las celdas con fondo gris claro y centrado
                 PdfPCell celda;
                 celda = new PdfPCell(new Phrase("EAN", new Font(Font.FontFamily.HELVETICA, 10)));
                 celda.BackgroundColor = new BaseColor(220, 220, 220);
+                celda.HorizontalAlignment = Element.ALIGN_CENTER;
+                celda.VerticalAlignment = Element.ALIGN_MIDDLE;
                 tablaProductos.AddCell(celda);
 
                 celda = new PdfPCell(new Phrase("Producto", new Font(Font.FontFamily.HELVETICA, 10)));
                 celda.BackgroundColor = new BaseColor(220, 220, 220);
+                celda.HorizontalAlignment = Element.ALIGN_CENTER;
+                celda.VerticalAlignment = Element.ALIGN_MIDDLE;
                 tablaProductos.AddCell(celda);
 
                 celda = new PdfPCell(new Phrase("Cantidad", new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
                 celda.BackgroundColor = new BaseColor(220, 220, 220);
+                celda.HorizontalAlignment = Element.ALIGN_CENTER;
+                celda.VerticalAlignment = Element.ALIGN_MIDDLE;
                 tablaProductos.AddCell(celda);
 
                 celda = new PdfPCell(new Phrase("Precio Sin IVA", new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
                 celda.BackgroundColor = new BaseColor(220, 220, 220);
+                celda.HorizontalAlignment = Element.ALIGN_CENTER;
+                celda.VerticalAlignment = Element.ALIGN_MIDDLE;
                 tablaProductos.AddCell(celda);
 
                 celda = new PdfPCell(new Phrase("Precio", new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
                 celda.BackgroundColor = new BaseColor(220, 220, 220);
+                celda.HorizontalAlignment = Element.ALIGN_CENTER;
+                celda.VerticalAlignment = Element.ALIGN_MIDDLE;
                 tablaProductos.AddCell(celda);
 
                 celda = new PdfPCell(new Phrase("Total", new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
                 celda.BackgroundColor = new BaseColor(220, 220, 220);
+                celda.HorizontalAlignment = Element.ALIGN_CENTER;
+                celda.VerticalAlignment = Element.ALIGN_MIDDLE;
                 tablaProductos.AddCell(celda);
 
                 double totalSinIVA = 0;
 
-                using (var conexion = new Conexion())
+                foreach (var producto in productosEnVenta)
                 {
-                    conexion.AbrirConexion();
-
-                    foreach (var producto in productosEnVenta)
+                    tablaProductos.AddCell(new PdfPCell(new Phrase(producto.ProductoId.ToString(), new Font(Font.FontFamily.HELVETICA, 10)))
                     {
-                        // Obtener el nombre y el precio sin IVA del producto desde la base de datos
-                        string nombreProducto;
-                        double precioSinIVA;
-                        var comando = new MySqlCommand("SELECT Nombre, Precio FROM Productos WHERE EAN = @ean", conexion.ObtenerConexion());
-                        comando.Parameters.AddWithValue("@ean", producto.ProductoId);
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        VerticalAlignment = Element.ALIGN_MIDDLE
+                    });
 
-                        using (var lector = comando.ExecuteReader())
-                        {
-                            if (lector.Read())
-                            {
-                                nombreProducto = lector["Nombre"].ToString();
-                                precioSinIVA = Convert.ToDouble(lector["Precio"]);
-                            }
-                            else
-                            {
-                                nombreProducto = "Producto no encontrado";
-                                precioSinIVA = 0;
-                            }
-                        }
+                    tablaProductos.AddCell(new PdfPCell(new Phrase(producto.Nombre, new Font(Font.FontFamily.HELVETICA, 10)))
+                    {
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        VerticalAlignment = Element.ALIGN_MIDDLE
+                    });
 
-                        tablaProductos.AddCell(new Phrase(producto.ProductoId.ToString(), new Font(Font.FontFamily.HELVETICA, 10)));
-                        tablaProductos.AddCell(new Phrase(nombreProducto, new Font(Font.FontFamily.HELVETICA, 10)));
-                        tablaProductos.AddCell(new Phrase(producto.Cantidad.ToString(), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
-                        tablaProductos.AddCell(new Phrase(precioSinIVA.ToString("C2"), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
-                        tablaProductos.AddCell(new Phrase(producto.ValorUnitario.ToString("C2"), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
-                        tablaProductos.AddCell(new Phrase(producto.Subtotal.ToString("C2"), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
+                    tablaProductos.AddCell(new PdfPCell(new Phrase(producto.Cantidad.ToString(), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)))
+                    {
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        VerticalAlignment = Element.ALIGN_MIDDLE
+                    });
 
-                        totalSinIVA += precioSinIVA * producto.Cantidad;
-                    }
+                    tablaProductos.AddCell(new PdfPCell(new Phrase(producto.ValorUnitario.ToString("C2"), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)))
+                    {
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        VerticalAlignment = Element.ALIGN_MIDDLE
+                    });
 
-                    conexion.CerrarConexion();
+                    tablaProductos.AddCell(new PdfPCell(new Phrase(producto.ValorUnitario.ToString("C2"), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)))
+                    {
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        VerticalAlignment = Element.ALIGN_MIDDLE
+                    });
+
+                    tablaProductos.AddCell(new PdfPCell(new Phrase(producto.Subtotal.ToString("C2"), new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)))
+                    {
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        VerticalAlignment = Element.ALIGN_MIDDLE
+                    });
+
+                    totalSinIVA += producto.ValorUnitario * producto.Cantidad;
                 }
 
                 documento.Add(tablaProductos);
@@ -565,6 +586,7 @@ namespace TFG
             }
         }
 
+
         private void RegularizarStock(List<DVenta> productosEnVenta)
         {
             using (var conexion = new Conexion())
@@ -584,8 +606,6 @@ namespace TFG
                 conexion.CerrarConexion();
             }
         }
-
-
 
 
 

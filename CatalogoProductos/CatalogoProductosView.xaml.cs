@@ -75,6 +75,12 @@ namespace TFG
             {
                 string propertyName = header.Tag.ToString();
 
+                if (string.IsNullOrEmpty(propertyName))
+                {
+                    return; // Salir si no hay propiedad asociada al encabezado
+                }
+
+                // Invertir la dirección de ordenación si se hace clic en la misma columna
                 if (currentSort == propertyName)
                 {
                     isAscending = !isAscending;
@@ -83,6 +89,12 @@ namespace TFG
                 {
                     currentSort = propertyName;
                     isAscending = true;
+                }
+
+                if (ProductosListView.ItemsSource == null || ProductosListView.Items.Count == 0)
+                {
+                    MessageBox.Show("No hay datos para ordenar.", "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
                 }
 
                 view = CollectionViewSource.GetDefaultView(ProductosListView.ItemsSource);
@@ -118,6 +130,7 @@ namespace TFG
                 }
             }
         }
+
 
 
         private void BuscarTextBox_GotFocus(object sender, RoutedEventArgs e)
