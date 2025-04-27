@@ -88,28 +88,28 @@ namespace TFG
 
                 // Consulta para obtener los movimientos
                 string query = @"
-                    SELECT 
-                        ProductoId AS ProductoEan, 
-                        FechaMovimiento, 
-                        TipoMovimiento, 
-                        Cantidad 
-                    FROM 
-                        Movimientos
-                    WHERE 
-                        ProductoId = @ProductoEan
+            SELECT 
+                ProductoId AS ProductoEan, 
+                FechaMovimiento, 
+                TipoMovimiento, 
+                Cantidad 
+            FROM 
+                Movimientos
+            WHERE 
+                ProductoId = @ProductoEan
 
-                    UNION ALL
+            UNION ALL
 
-                    SELECT 
-                        ProductoEAN, 
-                        FechaMovimiento, 
-                        TipoMovimiento, 
-                        Cantidad 
-                    FROM 
-                        MovimientosWeb
-                    WHERE 
-                        ProductoEAN = @ProductoEan
-                    ORDER BY FechaMovimiento;"; // Asegúrate de ordenar por fecha
+            SELECT 
+                ProductoEAN, 
+                FechaMovimiento, 
+                TipoMovimiento, 
+                Cantidad 
+            FROM 
+                MovimientosWeb
+            WHERE 
+                ProductoEAN = @ProductoEan
+            ORDER BY FechaMovimiento;"; // Asegúrate de ordenar por fecha
 
                 using (var command = new MySqlCommand(query, conexion.ObtenerConexion()))
                 {
@@ -134,9 +134,13 @@ namespace TFG
                             {
                                 stockActual -= movimiento.Cantidad; // Resta la cantidad para ventas
                             }
-                            else if (movimiento.TipoMovimiento == "Compra") // Asegúrate de manejar otros tipos de movimientos
+                            else if (movimiento.TipoMovimiento == "Compra")
                             {
-                                stockActual += movimiento.Cantidad; // Suma la cantidad para ingresos
+                                stockActual += movimiento.Cantidad; // Suma la cantidad para compras
+                            }
+                            else if (movimiento.TipoMovimiento == "Devolución")
+                            {
+                                stockActual += movimiento.Cantidad; // Suma la cantidad para devoluciones
                             }
 
                             movimiento.StockActual = stockActual; // Asigna el stock actual al movimiento
@@ -148,5 +152,6 @@ namespace TFG
 
             return movimientos;
         }
+
     }
 }

@@ -1,0 +1,241 @@
+﻿<Window x:Class="TFG.RecepcionMercancia.DetallesRecepcion"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TFG.RecepcionMercancia"
+        mc:Ignorable="d"
+        Title="Detalles Recepción" Height="800" Width="1200"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#2196F3"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="15,5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="5"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#1976D2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="#E3F2FD">
+        <StackPanel Margin="20">
+            <TextBlock Text="Recepción de Productos" 
+                      FontWeight="Bold" 
+                      FontSize="24" 
+                      HorizontalAlignment="Center"
+                      Foreground="#1565C0"
+                      Margin="0,0,0,20"/>
+
+            <!-- Información del Pedido -->
+            <Border Background="White" 
+                    CornerRadius="5" 
+                    Padding="20" 
+                    Margin="0,0,0,20"
+                    BorderBrush="#BBDEFB"
+                    BorderThickness="1">
+                <Border.Effect>
+                    <DropShadowEffect Color="#BBDEFB" 
+                                    Direction="320" 
+                                    ShadowDepth="3" 
+                                    BlurRadius="5" 
+                                    Opacity="0.2"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Número de Orden:" 
+                             FontWeight="Bold" 
+                             FontSize="14" 
+                             Grid.Column="0" 
+                             Margin="0,0,10,0"
+                             Foreground="#1565C0"
+                             HorizontalAlignment="Right"/>
+                    <TextBlock Text="{Binding NumeroOrden}" 
+                             FontSize="14" 
+                             Grid.Column="1" 
+                             Margin="0,0,20,0"
+                             HorizontalAlignment="Center"/>
+                    <TextBlock Text="Proveedor:" 
+                             FontWeight="Bold" 
+                             FontSize="14" 
+                             Grid.Column="2" 
+                             Margin="0,0,10,0"
+                             Foreground="#1565C0"
+                             HorizontalAlignment="Right"/>
+                    <TextBlock Text="{Binding Proveedor}" 
+                             FontSize="14" 
+                             Grid.Column="3"
+                             HorizontalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <!-- Lista de Productos -->
+            <Border Background="White" 
+                    CornerRadius="5" 
+                    Padding="20"
+                    BorderBrush="#BBDEFB"
+                    BorderThickness="1">
+                <Border.Effect>
+                    <DropShadowEffect Color="#BBDEFB" 
+                                    Direction="320" 
+                                    ShadowDepth="3" 
+                                    BlurRadius="5" 
+                                    Opacity="0.2"/>
+                </Border.Effect>
+                <StackPanel>
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="400"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="120"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Nombre" 
+                                 FontWeight="Bold" 
+                                 FontSize="14" 
+                                 Grid.Column="0"
+                                 Foreground="#1565C0"
+                                 HorizontalAlignment="Center"/>
+                        <TextBlock Text="EAN" 
+                                 FontWeight="Bold" 
+                                 FontSize="14" 
+                                 Grid.Column="1"
+                                 Foreground="#1565C0"
+                                 HorizontalAlignment="Center"/>
+                        <TextBlock Text="Cant. Pedida" 
+                                 FontWeight="Bold" 
+                                 FontSize="14" 
+                                 Grid.Column="2"
+                                 Foreground="#1565C0"
+                                 HorizontalAlignment="Center"/>
+                        <TextBlock Text="Cant. Recibida" 
+                                 FontWeight="Bold" 
+                                 FontSize="14" 
+                                 Grid.Column="3"
+                                 Foreground="#1565C0"
+                                 HorizontalAlignment="Center"/>
+                        <TextBlock Text="Estado" 
+                                 FontWeight="Bold" 
+                                 FontSize="14" 
+                                 Grid.Column="4"
+                                 Foreground="#1565C0"
+                                 HorizontalAlignment="Center"/>
+                        <TextBlock Text="Validar" 
+                                 FontWeight="Bold" 
+                                 FontSize="14" 
+                                 Grid.Column="5"
+                                 Foreground="#1565C0"
+                                 HorizontalAlignment="Center"/>
+                    </Grid>
+
+                    <ScrollViewer MaxHeight="500" 
+                                VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding Productos}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="#BBDEFB" 
+                                            BorderThickness="0,0,0,1" 
+                                            Padding="0,10">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="400"/>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="120"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Text="{Binding NombreProducto}" 
+                                                     Grid.Column="0" 
+                                                     FontSize="14" 
+                                                     VerticalAlignment="Center"
+                                                     HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding EAN}" 
+                                                     Grid.Column="1" 
+                                                     FontSize="14" 
+                                                     VerticalAlignment="Center"
+                                                     HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding CantidadPedida}" 
+                                                     Grid.Column="2" 
+                                                     FontSize="14" 
+                                                     VerticalAlignment="Center"
+                                                     HorizontalAlignment="Center"/>
+
+                                            <TextBox Text="{Binding CantidadRecibida, UpdateSourceTrigger=PropertyChanged}"
+                                                   Grid.Column="3"
+                                                   Width="50"
+                                                   Height="25"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   TextAlignment="Center"
+                                                   BorderBrush="#BBDEFB"/>
+
+                                            <TextBlock Text="{Binding Estado}"
+                                                     Grid.Column="4" 
+                                                     FontSize="14" 
+                                                     VerticalAlignment="Center"
+                                                     HorizontalAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Estado}" Value="Validado">
+                                                                <Setter Property="Foreground" Value="#4CAF50"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Estado}" Value="Pendiente">
+                                                                <Setter Property="Foreground" Value="#FF9800"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+
+                                            <CheckBox Grid.Column="5" 
+                                                    IsChecked="{Binding Recibido}" 
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <Button Content="Recepcionar Mercancía" 
+                            Style="{StaticResource ButtonStyle}"
+                            Margin="0,20,0,0" 
+                            HorizontalAlignment="Center"
+                            Width="200"
+                            Height="40"
+                            FontSize="16"
+                            Click="BtnRecepcionar_Click"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -18,28 +18,23 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using OfficeOpenXml;
 
-
-
 namespace TFG.ControlDeStock
 {
-  
     public partial class ControlDeStock : UserControl
     {
-      
-        private string currentSort;
+        private string currentSort = ""; // Variable para controlar la columna actual de ordenamiento
         private bool isAscending = true;
+        private ICollectionView view; // Vista para gestionar el ordenamiento
+
         public ControlDeStock()
         {
             InitializeComponent();
             this.DataContext = this;
             CargarProductos();
-           
-           
         }
 
         private void BuscarTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            // Código para manejar el evento GotFocus
             if (BuscarTextBox.Text == "Introduce el producto por ID, Nombre, Marca o Categoria")
             {
                 BuscarTextBox.Text = "";
@@ -49,7 +44,6 @@ namespace TFG.ControlDeStock
 
         private void BuscarTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            // Código para manejar el evento LostFocus
             if (string.IsNullOrWhiteSpace(BuscarTextBox.Text))
             {
                 BuscarTextBox.Text = "Introduce el producto por ID, Nombre, Marca o Categoria";
@@ -61,48 +55,40 @@ namespace TFG.ControlDeStock
         {
             string searchTerm = BuscarTextBox.Text.Trim();
             string query = @"
-        SELECT p.*, c.Nombre AS CategoriaNombre
-        FROM productos p
-        JOIN categorias c ON p.CategoriaId = c.Id
-        WHERE p.Id = @searchTerm OR p.Nombre LIKE @searchTerm OR p.Marca LIKE @searchTerm OR c.Nombre LIKE @searchTerm;";
+            SELECT p.*, c.Nombre AS CategoriaNombre
+            FROM productos p
+            JOIN categorias c ON p.CategoriaId = c.Id
+            WHERE CAST(p.Id AS CHAR) LIKE @searchTerm OR p.Nombre LIKE @searchTerm OR p.Marca LIKE @searchTerm OR c.Nombre LIKE @searchTerm;";
 
             using (Conexion conexion = new Conexion())
             {
                 try
                 {
-                    conexion.AbrirConexion(); // Abrir la conexión
+                    conexion.AbrirConexion();
                     using (MySqlCommand command = new MySqlCommand(query, conexion.ObtenerConexion()))
                     {
                         command.Parameters.AddWithValue("@searchTerm", "%" + searchTerm + "%");
 
-                        // Ejecutar la consulta y llenar el DataTable
-                        using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+                        using (MySqlDataReader reader = command.ExecuteReader())
                         {
-                            DataTable dataTable = new DataTable();
-                            adapter.Fill(dataTable);
-                            ControlDeStockListView.ItemsSource = dataTable.DefaultView; // Asignar el resultado al ListView
+                            List<Producto> productos = new List<Producto>();
 
-                            // Cambiar el color de fondo de cada ListViewItem
-                            foreach (DataRowView rowView in dataTable.DefaultView)
+                            while (reader.Read())
                             {
-                                var listViewItem = (ListViewItem)ControlDeStockListView.ItemContainerGenerator.ContainerFromItem(rowView);
-                                if (listViewItem != null)
+                                Producto producto = new Producto
                                 {
-                                    // Obtener los valores necesarios
-                                    var stock = Convert.ToInt32(rowView["Stock"]);
-                                    var cantidadMinima = Convert.ToInt32(rowView["CantidadMinima"]);
+                                    EAN = reader["EAN"].ToString(),
+                                    Nombre = reader["Nombre"].ToString(),
+                                    Stock = reader["Stock"] != DBNull.Value ? Convert.ToInt32(reader["Stock"]) : 0,
+                                    CantidadMaxima = reader["CantidadMaxima"] != DBNull.Value ? Convert.ToInt32(reader["CantidadMaxima"]) : 0,
+                                    CantidadMinima = reader["CantidadMinima"] != DBNull.Value ? Convert.ToInt32(reader["CantidadMinima"]) : 0,
+                                    Marca = reader["Marca"] != DBNull.Value ? reader["Marca"].ToString() : string.Empty
+                                };
 
-                                    // Comprobar si el stock es menor que la cantidad mínima
-                                    if (stock < cantidadMinima)
-                                    {
-                                        listViewItem.Background = new SolidColorBrush(Colors.Red); // Cambiar a rojo
-                                    }
-                                    else
-                                    {
-                                        listViewItem.Background = new SolidColorBrush(Colors.White); // Color normal
-                                    }
-                                }
+                                productos.Add(producto);
                             }
+
+                            ControlDeStockListView.ItemsSource = productos;
                         }
                     }
                 }
@@ -110,23 +96,17 @@ namespace TFG.ControlDeStock
                 {
                     MessageBox.Show("Error: " + ex.Message);
                 }
-                finally
-                {
-                    conexion.CerrarConexion(); // Cerrar la conexión
-                }
             }
         }
 
-
-
         private void RefrescarButton_Click(object sender, RoutedEventArgs e)
         {
-            BuscarButton_Click(sender, e);
+            CargarProductos();
         }
 
         private void CargarProductos()
         {
-            using (Conexion conexion = new Conexion())
+            using (var conexion = new Conexion())
             {
                 conexion.AbrirConexion();
                 string query = "SELECT * FROM productos";
@@ -151,36 +131,35 @@ namespace TFG.ControlDeStock
                                     Marca = reader["Marca"] != DBNull.Value ? reader["Marca"].ToString() : string.Empty
                                 };
 
-                                // No necesitas asignar IsOutOfStock aquí, se calculará automáticamente
                                 productos.Add(producto);
                             }
 
                             ControlDeStockListView.ItemsSource = productos;
+
+                            // Configurar la vista para ordenamiento
+                            view = CollectionViewSource.GetDefaultView(ControlDeStockListView.ItemsSource);
+                            view.SortDescriptions.Clear();
                         }
                     }
                     catch (Exception ex)
                     {
+                        ControlDeStockListView.ItemsSource = null; // Limpiar la lista en caso de error
                         MessageBox.Show("Error al cargar productos: " + ex.Message);
                     }
                 }
             }
         }
 
-
         private void ControlDeStockListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            // Obtiene la posición del cursor
             var mousePos = Mouse.GetPosition(ControlDeStockListView);
             var item = ControlDeStockListView.InputHitTest(mousePos) as ListViewItem;
 
-
             if (item == null)
             {
-                e.Handled = true; 
+                e.Handled = true;
             }
         }
-
-
 
         private void MandarOrdenesButton_Click(object sender, RoutedEventArgs e)
         {
@@ -192,14 +171,38 @@ namespace TFG.ControlDeStock
                 return;
             }
 
+            // Verificar si el producto ya está en las órdenes de compra
             using (var conexion = new Conexion())
             {
                 try
                 {
                     conexion.AbrirConexion();
-                    var connection = conexion.ObtenerConexion();
+                    string queryVerificar = @"
+                    SELECT COUNT(*) 
+                    FROM DetallesOrdenDeCompra d 
+                    INNER JOIN OrdenesDeCompra o ON d.OrdenDeCompraId = o.Id 
+                    WHERE d.EAN = @ean AND o.Estado != 'Entregado'";
 
-                    // 1. Primero obtenemos el precio y la marca (proveedor) del producto
+                    using (var cmdVerificar = new MySqlCommand(queryVerificar, conexion.ObtenerConexion()))
+                    {
+                        cmdVerificar.Parameters.AddWithValue("@ean", productoSeleccionado.EAN);
+                        int count = Convert.ToInt32(cmdVerificar.ExecuteScalar());
+
+                        if (count > 0)
+                        {
+                            var result = MessageBox.Show("Este artículo ya está añadido a órdenes de compra, ¿desea mandarlo de todos modos?",
+                                                          "Confirmación",
+                                                          MessageBoxButton.YesNo,
+                                                          MessageBoxImage.Question);
+                            if (result == MessageBoxResult.No)
+                            {
+                                return;
+                            }
+                        }
+                    }
+
+                    // Proceder a añadir el producto a la orden de compra
+                    var connection = conexion.ObtenerConexion();
                     string queryProducto = @"SELECT Precio, Marca FROM productos WHERE EAN = @ean";
                     decimal precioVenta = 0;
                     string proveedor = "";
@@ -217,17 +220,15 @@ namespace TFG.ControlDeStock
                         }
                     }
 
-                    // Calculamos el precio de compra (80% del precio de venta como ejemplo)
                     decimal precioCompra = Math.Round(precioVenta * 0.8m, 2);
 
-                    // 2. Buscamos si existe una orden abierta para este proveedor
                     string queryOrdenExistente = @"
-                SELECT Id 
-                FROM OrdenesDeCompra 
-                WHERE Proveedor = @proveedor 
-                AND Estado != 'Entregado'
-                ORDER BY FechaApertura DESC 
-                LIMIT 1";
+                    SELECT Id 
+                    FROM OrdenesDeCompra 
+                    WHERE Proveedor = @proveedor 
+                    AND Estado != 'Entregado'
+                    ORDER BY FechaApertura DESC 
+                    LIMIT 1";
 
                     int ordenId;
                     using (var cmdOrden = new MySqlCommand(queryOrdenExistente, connection))
@@ -235,17 +236,16 @@ namespace TFG.ControlDeStock
                         cmdOrden.Parameters.AddWithValue("@proveedor", proveedor);
                         var result = cmdOrden.ExecuteScalar();
 
-                        if (result == null) // No existe orden abierta
+                        if (result == null)
                         {
-                            // 3. Creamos una nueva orden
                             string insertOrden = @"
-                        INSERT INTO OrdenesDeCompra (NumeroOrden, Proveedor, Estado) 
-                        VALUES (@numeroOrden, @proveedor, 'Pendiente');
-                        SELECT LAST_INSERT_ID();";
+                            INSERT INTO OrdenesDeCompra (NumeroOrden, Proveedor, Estado) 
+                            VALUES (@numeroOrden, @proveedor, 'Pendiente');
+                            SELECT LAST_INSERT_ID();";
 
                             using (var cmdNuevaOrden = new MySqlCommand(insertOrden, connection))
                             {
-                                string numeroOrden = $"OC-{DateTime.Now:yyyyMMdd}-{new Random().Next(1000, 9999)}";
+                                string numeroOrden = $"OC-{DateTime.Now:yyyyMMdd}-{Guid.NewGuid().ToString().Substring(0, 8)}";
                                 cmdNuevaOrden.Parameters.AddWithValue("@numeroOrden", numeroOrden);
                                 cmdNuevaOrden.Parameters.AddWithValue("@proveedor", proveedor);
                                 ordenId = Convert.ToInt32(cmdNuevaOrden.ExecuteScalar());
@@ -257,12 +257,11 @@ namespace TFG.ControlDeStock
                         }
                     }
 
-                    // 4. Insertamos el detalle de la orden
                     string insertDetalle = @"
-                INSERT INTO DetallesOrdenDeCompra 
-                (OrdenDeCompraId, ProductoId, EAN, Cantidad, PrecioUnitario)
-                VALUES 
-                (@ordenId, (SELECT Id FROM productos WHERE EAN = @ean), @ean, 1, @precioUnitario)";
+                    INSERT INTO DetallesOrdenDeCompra 
+                    (OrdenDeCompraId, ProductoId, EAN, Cantidad, PrecioUnitario)
+                    VALUES 
+                    (@ordenId, (SELECT Id FROM productos WHERE EAN = @ean), @ean, 1, @precioUnitario)";
 
                     using (var cmdDetalle = new MySqlCommand(insertDetalle, connection))
                     {
@@ -279,14 +278,8 @@ namespace TFG.ControlDeStock
                 {
                     MessageBox.Show($"Error al procesar la orden: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                finally
-                {
-                    conexion.CerrarConexion();
-                }
             }
         }
-
-
 
         private void ExportarButton_Click(object sender, RoutedEventArgs e)
         {
@@ -303,7 +296,6 @@ namespace TFG.ControlDeStock
                     {
                         var worksheet = package.Workbook.Worksheets.Add("Productos");
 
-                        // Agregar encabezados
                         worksheet.Cells[1, 1].Value = "EAN";
                         worksheet.Cells[1, 2].Value = "Nombre";
                         worksheet.Cells[1, 3].Value = "Stock";
@@ -324,26 +316,27 @@ namespace TFG.ControlDeStock
                             row++;
                         }
 
-                        // Guardar el archivo en el escritorio
                         string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
                         string filePath = System.IO.Path.Combine(desktopPath, "Control de Stock.xlsx");
 
-                        // Guardar el archivo
+                        if (System.IO.File.Exists(filePath))
+                        {
+                            System.IO.File.Delete(filePath);
+                        }
+
                         System.IO.FileInfo fi = new System.IO.FileInfo(filePath);
                         package.SaveAs(fi);
                         MessageBox.Show("Exportación a Excel completada.");
 
-                        // Abrir el archivo Excel
                         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                         {
                             FileName = fi.FullName,
-                            UseShellExecute = true // Importante para abrir el archivo
+                            UseShellExecute = true
                         });
                     }
                 }
             }
         }
-
 
         private void ModificarMaximasyMinimasButton_Click(object sender, RoutedEventArgs e)
         {
@@ -353,19 +346,17 @@ namespace TFG.ControlDeStock
                 return;
             }
 
-            // Cambia este cast a Producto
             var selectedItem = ControlDeStockListView.SelectedItem as Producto;
             if (selectedItem != null)
             {
-                // Crea un nuevo objeto Producto basado en el seleccionado
                 Producto producto = new Producto
                 {
                     Nombre = selectedItem.Nombre,
                     EAN = selectedItem.EAN,
                     Stock = selectedItem.Stock,
                     Marca = selectedItem.Marca,
-                    CantidadMaxima = selectedItem.CantidadMaxima, 
-                    CantidadMinima = selectedItem.CantidadMinima  
+                    CantidadMaxima = selectedItem.CantidadMaxima,
+                    CantidadMinima = selectedItem.CantidadMinima
                 };
 
                 ModificarMaximasyMinimas modificarMaximasyMinimasView = new ModificarMaximasyMinimas();
@@ -383,33 +374,85 @@ namespace TFG.ControlDeStock
             }
         }
 
+        private void MostrarPosiblesPedidosButton_Click(object sender, RoutedEventArgs e)
+        {
+            MostrarPosiblesPedidos();
+        }
 
+        private void MostrarPosiblesPedidos()
+        {
+            using (Conexion conexion = new Conexion())
+            {
+                conexion.AbrirConexion();
+                string query = @"
+                SELECT * FROM productos
+                WHERE Stock <= CantidadMinima";
 
+                using (MySqlCommand command = new MySqlCommand(query, conexion.ObtenerConexion()))
+                {
+                    try
+                    {
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            List<Producto> productos = new List<Producto>();
+
+                            while (reader.Read())
+                            {
+                                Producto producto = new Producto
+                                {
+                                    EAN = reader["EAN"].ToString(),
+                                    Nombre = reader["Nombre"].ToString(),
+                                    Stock = reader["Stock"] != DBNull.Value ? Convert.ToInt32(reader["Stock"]) : 0,
+                                    CantidadMaxima = reader["CantidadMaxima"] != DBNull.Value ? Convert.ToInt32(reader["CantidadMaxima"]) : 0,
+                                    CantidadMinima = reader["CantidadMinima"] != DBNull.Value ? Convert.ToInt32(reader["CantidadMinima"]) : 0,
+                                    Marca = reader["Marca"] != DBNull.Value ? reader["Marca"].ToString() : string.Empty
+                                };
+
+                                productos.Add(producto);
+                            }
+
+                            ControlDeStockListView.ItemsSource = productos;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al cargar productos: " + ex.Message);
+                    }
+                }
+            }
+        }
         private void Header_Click(object sender, MouseButtonEventArgs e)
         {
             if (sender is TextBlock header)
             {
                 string propertyName = header.Tag.ToString();
 
-                // Cambiar el estado de ordenamiento
+                if (string.IsNullOrEmpty(propertyName))
+                {
+                    return; // Salir si no hay propiedad asociada al encabezado
+                }
+
+                // Invertir la dirección de ordenación si se hace clic en la misma columna
                 if (currentSort == propertyName)
                 {
-                    isAscending = !isAscending; // Cambia de ascendente a descendente
+                    isAscending = !isAscending;
                 }
                 else
                 {
-                    currentSort = propertyName; // Actualiza la propiedad actual
-                    isAscending = true; // Por defecto, ascendente
+                    currentSort = propertyName;
+                    isAscending = true;
                 }
 
-                // Obtener la vista de colección
-                var view = CollectionViewSource.GetDefaultView(ControlDeStockListView.ItemsSource);
-                view.SortDescriptions.Clear(); // Limpiar descripciones de ordenamiento
+                if (ControlDeStockListView.ItemsSource == null || ControlDeStockListView.Items.Count == 0)
+                {
+                    MessageBox.Show("No hay datos para ordenar.", "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
 
-                // Añadir la nueva descripción de ordenamiento
+                view = CollectionViewSource.GetDefaultView(ControlDeStockListView.ItemsSource);
+                view.SortDescriptions.Clear();
                 view.SortDescriptions.Add(new SortDescription(propertyName, isAscending ? ListSortDirection.Ascending : ListSortDirection.Descending));
 
-                // Actualizar las cabeceras para mostrar la dirección del orden
                 var gridView = ControlDeStockListView.View as GridView;
                 if (gridView != null)
                 {
@@ -431,8 +474,6 @@ namespace TFG.ControlDeStock
             }
         }
 
-
-       
 
     }
 }

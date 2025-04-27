@@ -66,9 +66,9 @@ namespace TFG.OrdenesDeCompra
                 {
                     conexion.AbrirConexion();
                     string query = @"SELECT d.*, p.Nombre as NombreProducto 
-                            FROM DetallesOrdenDeCompra d 
-                            INNER JOIN productos p ON d.ProductoId = p.Id 
-                            WHERE d.OrdenDeCompraId = @OrdenId";
+                    FROM DetallesOrdenDeCompra d 
+                    INNER JOIN productos p ON d.ProductoId = p.Id 
+                    WHERE d.OrdenDeCompraId = @OrdenId";
 
                     MySqlCommand cmd = new MySqlCommand(query, conexion.ObtenerConexion());
                     cmd.Parameters.AddWithValue("@OrdenId", _ordenId);
@@ -92,7 +92,7 @@ namespace TFG.OrdenesDeCompra
                         }
                     }
 
-                    RecalcularTotal();
+                    RecalcularTotal(); // Calcular el total inicial
                 }
                 catch (Exception ex)
                 {
@@ -105,9 +105,12 @@ namespace TFG.OrdenesDeCompra
         {
             if (e.PropertyName == nameof(ProductoOrden.PrecioSubtotal))
             {
-                RecalcularTotal();
+                RecalcularTotal(); // Recalcular el total cuando cambie el subtotal de un producto
             }
         }
+
+
+    
 
 
         private void RecalcularTotal()
@@ -115,8 +118,48 @@ namespace TFG.OrdenesDeCompra
             TotalOrden = ProductosOrden?.Sum(p => p.PrecioSubtotal) ?? 0; // Sumar todos los subtotales
         }
 
+
+        private void ActualizarDetallesOrdenEnBaseDeDatos()
+        {
+            using (Conexion conexion = new Conexion())
+            {
+                try
+                {
+                    conexion.AbrirConexion();
+
+                    foreach (var producto in ProductosOrden)
+                    {
+                        string query = @"
+                    UPDATE DetallesOrdenDeCompra 
+                    SET Cantidad = @Cantidad, 
+                        Subtotal = @Subtotal, 
+                        TotalOrden = @TotalOrden 
+                    WHERE Id = @Id";
+
+                        MySqlCommand cmd = new MySqlCommand(query, conexion.ObtenerConexion());
+                        cmd.Parameters.AddWithValue("@Cantidad", producto.Cantidad);
+                        cmd.Parameters.AddWithValue("@Subtotal", producto.PrecioSubtotal);
+                        cmd.Parameters.AddWithValue("@TotalOrden", TotalOrden); // Usar el TotalOrden de la ventana
+                        cmd.Parameters.AddWithValue("@Id", producto.Id);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al actualizar los detalles de la orden: {ex.Message}");
+                }
+            }
+        }
+
+
+
+
         private void ConfirmarOrden_Click(object sender, RoutedEventArgs e)
         {
+            // Actualizar los detalles de la orden en la base de datos
+            ActualizarDetallesOrdenEnBaseDeDatos();
+
             using (Conexion conexion = new Conexion())
             {
                 try
@@ -136,6 +179,8 @@ namespace TFG.OrdenesDeCompra
                 }
             }
         }
+
+
 
         private void Cerrar_Click(object sender, RoutedEventArgs e)
         {

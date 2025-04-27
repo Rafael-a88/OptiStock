@@ -12,13 +12,13 @@ namespace TFG.OrdenesDeCompra
 {
     public partial class OrdenesDeCompra : UserControl
     {
-        private ObservableCollection<PedidoDeCompra> _pedidosDeCompra; // Lista de pedidos de compra
+        private ObservableCollection<PedidoDeCompra> _pedidosDeCompra;
 
         public OrdenesDeCompra()
         {
             InitializeComponent();
-            _pedidosDeCompra = new ObservableCollection<PedidoDeCompra>(); // Inicializar la lista de pedidos de compra
-            CargarPedidosDeCompra(); // Cargar los pedidos de compra iniciales
+            _pedidosDeCompra = new ObservableCollection<PedidoDeCompra>();
+            CargarPedidosDeCompra();
         }
 
         private void CargarPedidosDeCompra()
@@ -31,7 +31,6 @@ namespace TFG.OrdenesDeCompra
                     MySqlCommand command = new MySqlCommand("SELECT * FROM OrdenesDeCompra", conexion.ObtenerConexion());
                     MySqlDataReader reader = command.ExecuteReader();
 
-                    // Limpiar la colección antes de agregar nuevos elementos
                     _pedidosDeCompra.Clear();
 
                     while (reader.Read())
@@ -45,48 +44,56 @@ namespace TFG.OrdenesDeCompra
                             FechaApertura = (DateTime)reader["FechaApertura"]
                         };
 
-                        // Agregar pedido a la colección
                         _pedidosDeCompra.Add(pedido);
                     }
 
                     reader.Close();
-                    OrdenesDeCompraListView.ItemsSource = _pedidosDeCompra; // Asignar la colección al ListView
+                    OrdenesDeCompraListView.ItemsSource = _pedidosDeCompra;
 
-                    // Cambiar el color de fondo de las filas según el estado
-                    foreach (var item in _pedidosDeCompra)
-                    {
-                        var listViewItem = (ListViewItem)OrdenesDeCompraListView.ItemContainerGenerator.ContainerFromItem(item);
-                        if (listViewItem != null && item.Estado == "Mandado")
-                        {
-                            listViewItem.Background = new SolidColorBrush(Color.FromArgb(128, 0, 255, 0));
-                        }
-                    }
+                    ActualizarColoresFilas();
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Error al cargar los pedidos de compra: " + ex.Message);
+                    MessageBox.Show($"Error al cargar los pedidos de compra: {ex.Message}",
+                                  "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
 
-
+        private void ActualizarColoresFilas()
+        {
+            foreach (var item in _pedidosDeCompra)
+            {
+                var listViewItem = (ListViewItem)OrdenesDeCompraListView.ItemContainerGenerator.ContainerFromItem(item);
+                if (listViewItem != null)
+                {
+                    if (item.Estado == "Mandado")
+                    {
+                        listViewItem.Background = new SolidColorBrush(Color.FromArgb(128, 0, 255, 0));
+                    }
+                    else if (item.Estado == "Recibido")
+                    {
+                        listViewItem.Background = new SolidColorBrush(Color.FromArgb(128, 255, 0, 0));
+                    }
+                }
+            }
+        }
 
         private void BuscarButton_Click(object sender, RoutedEventArgs e)
         {
-            // Implementar la lógica de búsqueda de pedidos de compra
-            string busqueda = BuscarTextBox.Text.ToLower(); // Convertir a minúsculas para búsqueda insensible
-            var resultados = _pedidosDeCompra.Where(o => o.ID.ToString().Contains(busqueda) ||
-                                                         o.NumeroOrden.ToLower().Contains(busqueda) ||
-                                                         o.Proveedor.ToLower().Contains(busqueda) ||
-                                                         o.Estado.ToLower().Contains(busqueda) ||
-                                                         o.FechaApertura.ToString("dd/MM/yyyy").Contains(busqueda)).ToList();
+            string busqueda = BuscarTextBox.Text.ToLower();
+            var resultados = _pedidosDeCompra.Where(o =>
+                o.ID.ToString().Contains(busqueda) ||
+                o.NumeroOrden.ToLower().Contains(busqueda) ||
+                o.Proveedor.ToLower().Contains(busqueda) ||
+                o.Estado.ToLower().Contains(busqueda) ||
+                o.FechaApertura.ToString("dd/MM/yyyy").Contains(busqueda)).ToList();
 
-            OrdenesDeCompraListView.ItemsSource = resultados; // Asignar los resultados filtrados al ListView
+            OrdenesDeCompraListView.ItemsSource = resultados;
         }
 
         private void BuscarTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            // Lógica a ejecutar cuando el TextBox de búsqueda obtiene el foco
             if (BuscarTextBox.Text == "Buscar por ID, Proveedor o Número de Orden")
             {
                 BuscarTextBox.Text = "";
@@ -96,7 +103,6 @@ namespace TFG.OrdenesDeCompra
 
         private void BuscarTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            // Lógica a ejecutar cuando el TextBox de búsqueda pierde el foco
             if (string.IsNullOrEmpty(BuscarTextBox.Text) || BuscarTextBox.Text.Trim() == "")
             {
                 BuscarTextBox.Text = "Buscar por ID, Proveedor o Número de Orden";
@@ -106,7 +112,6 @@ namespace TFG.OrdenesDeCompra
 
         private void RefrescarButton_Click(object sender, RoutedEventArgs e)
         {
-            // Implementar la lógica de actualización de la lista de pedidos de compra
             CargarPedidosDeCompra();
         }
 
@@ -115,49 +120,121 @@ namespace TFG.OrdenesDeCompra
             PedidoDeCompra pedidoSeleccionado = (PedidoDeCompra)OrdenesDeCompraListView.SelectedItem;
             if (pedidoSeleccionado != null)
             {
-                // Cambiar el estado a "Mandado"
                 pedidoSeleccionado.Estado = "Mandado";
 
-                // Actualizar el estado en la base de datos
                 using (Conexion conexion = new Conexion())
                 {
                     try
                     {
                         conexion.AbrirConexion();
-                        MySqlCommand command = new MySqlCommand("UPDATE OrdenesDeCompra SET Estado = @estado WHERE Id = @id", conexion.ObtenerConexion());
+                        MySqlCommand command = new MySqlCommand(
+                            "UPDATE OrdenesDeCompra SET Estado = @estado WHERE Id = @id",
+                            conexion.ObtenerConexion());
                         command.Parameters.AddWithValue("@estado", pedidoSeleccionado.Estado);
                         command.Parameters.AddWithValue("@id", pedidoSeleccionado.ID);
                         command.ExecuteNonQuery();
+
+                        var listViewItem = (ListViewItem)OrdenesDeCompraListView.ItemContainerGenerator
+                            .ContainerFromItem(pedidoSeleccionado);
+                        if (listViewItem != null)
+                        {
+                            listViewItem.Background = new SolidColorBrush(Color.FromArgb(128, 0, 255, 0));
+                        }
+
+                        string mensaje = $"Fecha de Envío: {DateTime.Now:dd/MM/yyyy HH:mm:ss}\n" +
+                                       $"Número de Orden: {pedidoSeleccionado.NumeroOrden}\n" +
+                                       $"Proveedor: {pedidoSeleccionado.Proveedor}";
+                        MessageBox.Show(mensaje, "Detalles del Envío",
+                                      MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("Error al actualizar el estado en la base de datos: " + ex.Message);
+                        MessageBox.Show($"Error al actualizar el estado: {ex.Message}",
+                                      "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
-
-                // Cambiar el color de fondo de la fila seleccionada a verde
-                var listViewItem = (ListViewItem)OrdenesDeCompraListView.ItemContainerGenerator.ContainerFromItem(pedidoSeleccionado);
-                if (listViewItem != null)
-                {
-                    listViewItem.Background = new SolidColorBrush(Color.FromArgb(128, 0, 255, 0));
-                }
-
-                // Mostrar un mensaje con la información requerida
-                string mensaje = $"Fecha de Envío: {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}\n" +
-                                 $"Número de Orden: {pedidoSeleccionado.NumeroOrden}\n" +
-                                 $"Proveedor: {pedidoSeleccionado.Proveedor}";
-                MessageBox.Show(mensaje, "Detalles del Envío", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Por favor, seleccione una orden para mandar.",
+                              "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
+        private void EliminarOrdenButton_Click(object sender, RoutedEventArgs e)
+        {
+            PedidoDeCompra pedidoSeleccionado = (PedidoDeCompra)OrdenesDeCompraListView.SelectedItem;
+            if (pedidoSeleccionado == null)
+            {
+                MessageBox.Show("Por favor, seleccione una orden para eliminar.",
+                              "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var resultado = MessageBox.Show(
+                $"¿Está seguro que desea eliminar la orden {pedidoSeleccionado.NumeroOrden}?",
+                "Confirmar eliminación",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (resultado == MessageBoxResult.Yes)
+            {
+                using (Conexion conexion = new Conexion())
+                {
+                    try
+                    {
+                        conexion.AbrirConexion();
+                        using (MySqlTransaction transaction = conexion.ObtenerConexion().BeginTransaction())
+                        {
+                            try
+                            {
+                                // Primero eliminar los detalles de la orden
+                                MySqlCommand cmdDetalles = new MySqlCommand(
+                                    "DELETE FROM DetallesOrdenDeCompra WHERE OrdenDeCompraId = @id",
+                                    conexion.ObtenerConexion());
+                                cmdDetalles.Transaction = transaction;
+                                cmdDetalles.Parameters.AddWithValue("@id", pedidoSeleccionado.ID);
+                                cmdDetalles.ExecuteNonQuery();
+
+                                // Luego eliminar la orden
+                                MySqlCommand cmdOrden = new MySqlCommand(
+                                    "DELETE FROM OrdenesDeCompra WHERE Id = @id",
+                                    conexion.ObtenerConexion());
+                                cmdOrden.Transaction = transaction;
+                                cmdOrden.Parameters.AddWithValue("@id", pedidoSeleccionado.ID);
+                                cmdOrden.ExecuteNonQuery();
+
+                                transaction.Commit();
+                                _pedidosDeCompra.Remove(pedidoSeleccionado);
+
+                                MessageBox.Show("Orden eliminada correctamente.",
+                                              "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                            catch (Exception ex)
+                            {
+                                transaction.Rollback();
+                                throw new Exception("Error al eliminar la orden: " + ex.Message);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error al eliminar la orden: {ex.Message}",
+                                      "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+        }
 
         private void OrdenesDeCompraListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             PedidoDeCompra pedidoSeleccionado = (PedidoDeCompra)OrdenesDeCompraListView.SelectedItem;
             if (pedidoSeleccionado != null)
             {
-                DetallesOrdenCompra detallesVentana = new DetallesOrdenCompra(pedidoSeleccionado.ID, pedidoSeleccionado.NumeroOrden);
-                detallesVentana.ShowDialog(); // Mostrar como un diálogo modal
+                DetallesOrdenCompra detallesVentana = new DetallesOrdenCompra(
+                    pedidoSeleccionado.ID,
+                    pedidoSeleccionado.NumeroOrden);
+                detallesVentana.ShowDialog();
             }
         }
     }

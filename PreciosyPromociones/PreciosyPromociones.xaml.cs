@@ -131,11 +131,15 @@ namespace TFG.PreciosyPromociones
                         return;
                     }
 
-                    // Actualizar el precio y el descuento en el DataTable
+                    // Calcular el nuevo precio total con IVA
+                    decimal precioTotal = nuevoPrecio * 1.21m; // Añadiendo el 21% de IVA
+
+                    // Actualizar el precio, descuento y precio total en el DataTable
                     selectedRow["Precio"] = nuevoPrecio;
                     selectedRow["Descuento"] = porcentajeDescuento;
+                    selectedRow["PrecioTotal"] = precioTotal; // Asegúrate de que esta columna exista en tu DataTable
 
-                    // Actualizar los campos Precio y Descuento en la base de datos
+                    // Actualizar los campos Precio, Descuento y Precio Total en la base de datos
                     string query = "UPDATE productos SET Precio = @nuevoPrecio, Descuento = @descuento WHERE Id = @productoId;";
 
                     using (Conexion conexion = new Conexion())
@@ -155,11 +159,17 @@ namespace TFG.PreciosyPromociones
                             // Mensaje de éxito
                             MessageBox.Show($"Descuento aplicado al producto: {nombreProducto}");
                         }
+                        catch (SqlException ex)
+                        {
+                            MessageBox.Show($"Error de SQL: {ex.Message}");
+                        }
                         catch (Exception ex)
                         {
                             // Mensaje de error
                             MessageBox.Show($"Error al aplicar el descuento al producto: {nombreProducto}. Detalles: {ex.Message}");
                         }
+
+
                         finally
                         {
                             conexion.CerrarConexion(); // Cerrar la conexión
@@ -180,6 +190,8 @@ namespace TFG.PreciosyPromociones
                 MessageBox.Show("Por favor, introduzca un número válido.");
             }
         }
+
+
 
 
         private void Header_Click(object sender, MouseButtonEventArgs e)

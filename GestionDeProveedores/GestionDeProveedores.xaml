@@ -1,0 +1,231 @@
+﻿<UserControl x:Class="TFG.GestionDeProveedores.GestionDeProveedores" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" 
+             d:DesignWidth="1200">
+    <UserControl.Resources>
+        <Style TargetType="Button" x:Key="BotonEstilo">
+            <Setter Property="Background" Value="DodgerBlue"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="BorderBrush" Value="DarkBlue"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="LightSkyBlue"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="SkyBlue" Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Catálogo de Proveedores" 
+                   FontSize="28" 
+                   FontWeight="Bold" 
+                   Margin="50,50,80,10" 
+                   Grid.Row="0" 
+                   Foreground="Navy" 
+                   HorizontalAlignment="Left"/>
+        <StackPanel Orientation="Vertical" 
+            Grid.Row="1" 
+            HorizontalAlignment="Center" 
+            Margin="0,40,0,10">
+            <TextBox x:Name="BuscarTextBox" 
+             Width="350" 
+             Margin="0,0,0,10" 
+             Foreground="Black" 
+             HorizontalContentAlignment="Center" 
+             VerticalContentAlignment="Center" 
+             GotFocus="BuscarTextBox_GotFocus" 
+             LostFocus="BuscarTextBox_LostFocus" 
+             Text="Introduce el proveedor por ID, Nombre o Ciudad"/>
+            <StackPanel Orientation="Horizontal" 
+                HorizontalAlignment="Center">
+                <Button Content="Buscar" 
+                Width="100" 
+                Height="30" 
+                Margin="0,0,10,0"
+                Click="BuscarButton_Click" 
+                Style="{StaticResource BotonEstilo}"/>
+                <Button Content="Refrescar" 
+                Width="100" 
+                Height="30" 
+                Click="RefrescarButton_Click" 
+                Style="{StaticResource BotonEstilo}"/>
+            </StackPanel>
+        </StackPanel>
+
+        <ListView x:Name="ProveedoresListView" 
+                  Margin="50,10,50,0" 
+                  Grid.Row="2" 
+                  ScrollViewer.HorizontalScrollBarVisibility="Visible" 
+                  ScrollViewer.VerticalScrollBarVisibility="Visible" 
+                  MaxHeight="400">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="50" Header="ID">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ID}" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="150" Header="Nombre">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Nombre}" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="100" Header="Contacto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Contacto}" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="100" Header="Teléfono">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Telefono}" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="200" Header="Email">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Email}" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="200" Header="Dirección">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Direccion}" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="100" Header="Ciudad">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Ciudad}" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="100" Header="Provincia">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Provincia}" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="100" Header="Código Postal">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding CodigoPostal}" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="100" Header="País">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Pais}" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="120" Header="Tipo Proveedor">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding TipoProveedor}" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="200" Header="Notas">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Notas}" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="200" Header="Sitio Web">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding SitioWeb}" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="Margin" Value="4"/>
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="BorderBrush" Value="Blue"/>
+                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+
+        <StackPanel Orientation="Horizontal" 
+                    Grid.Row="3" 
+                    HorizontalAlignment="Center" 
+                    Margin="0,10,0,20">
+            <Button Content="Agregar Proveedor" 
+                    Width="150" 
+                    Height="35" 
+                    Click="AgregarProveedorButton_Click" 
+                    Style="{StaticResource BotonEstilo}"/>
+            <Button Content="Modificar Proveedor" 
+                    Width="150" 
+                    Height="35"
+                    Click="ModificarProveedorButton_Click" 
+                    Style="{StaticResource BotonEstilo}"/>
+            <Button Content="Eliminar Proveedor" 
+                    Width="150" 
+                    Height="35"
+                    Click="EliminarProveedorButton_Click" 
+                    Style="{StaticResource BotonEstilo}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

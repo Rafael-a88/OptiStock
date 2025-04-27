@@ -26,7 +26,11 @@ namespace TFG
         public double Descuento { get; set; }
         public string EAN { get; set; }
         public int CantidadMaxima { get; set; } 
-        public int CantidadMinima { get; set; } 
+        public int CantidadMinima { get; set; }
+        public int Recuento { get; set; } 
+        public string UbicacionRecuento { get; set; }
+
+        public int Diferencia { get; set; }
 
         public bool IsOutOfStock => Stock <= CantidadMinima;
     }

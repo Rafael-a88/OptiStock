@@ -1,85 +1,86 @@
 ﻿using System.ComponentModel;
 
-namespace TFG.OrdenesDeCompra
+public class ProductoOrden : INotifyPropertyChanged
 {
-    public class ProductoOrden : INotifyPropertyChanged
+    private int _id;
+    private string _nombreProducto;
+    private string _ean;
+    private int _cantidad;
+    private decimal _precioUnitario;
+    private bool _recibido;
+
+    public int Id
     {
-        private int _id;
-        private string _nombreProducto;
-        private string _ean;
-        private int _cantidad;
-        private decimal _precioUnitario;
-        private bool _recibido;
-
-        public int Id
+        get => _id;
+        set
         {
-            get => _id;
-            set
-            {
-                _id = value;
-                OnPropertyChanged(nameof(Id));
-            }
+            _id = value;
+            OnPropertyChanged(nameof(Id));
         }
+    }
 
-        public string NombreProducto
+    public string NombreProducto
+    {
+        get => _nombreProducto;
+        set
         {
-            get => _nombreProducto;
-            set
-            {
-                _nombreProducto = value;
-                OnPropertyChanged(nameof(NombreProducto));
-            }
+            _nombreProducto = value;
+            OnPropertyChanged(nameof(NombreProducto));
         }
+    }
 
-        public string EAN
+    public string EAN
+    {
+        get => _ean;
+        set
         {
-            get => _ean;
-            set
-            {
-                _ean = value;
-                OnPropertyChanged(nameof(EAN));
-            }
+            _ean = value;
+            OnPropertyChanged(nameof(EAN));
         }
+    }
 
-        public int Cantidad
+    public int Cantidad
+    {
+        get => _cantidad;
+        set
         {
-            get => _cantidad;
-            set
-            {
-                _cantidad = value;
-                OnPropertyChanged(nameof(Cantidad));
-                OnPropertyChanged(nameof(PrecioSubtotal)); // Notificar cambio en PrecioSubtotal
-            }
+            _cantidad = value;
+            OnPropertyChanged(nameof(Cantidad));
+            OnPropertyChanged(nameof(PrecioSubtotal)); // Notificar cambio en PrecioSubtotal
+            OnPropertyChanged(nameof(TotalOrden)); // Notificar cambio en TotalOrden
         }
+    }
 
-        public decimal PrecioUnitario
+    public decimal PrecioUnitario
+    {
+        get => _precioUnitario;
+        set
         {
-            get => _precioUnitario;
-            set
-            {
-                _precioUnitario = value;
-                OnPropertyChanged(nameof(PrecioUnitario));
-                OnPropertyChanged(nameof(PrecioSubtotal)); // Notificar cambio en PrecioSubtotal
-            }
+            _precioUnitario = value;
+            OnPropertyChanged(nameof(PrecioUnitario));
+            OnPropertyChanged(nameof(PrecioSubtotal)); // Notificar cambio en PrecioSubtotal
+            OnPropertyChanged(nameof(TotalOrden)); // Notificar cambio en TotalOrden
         }
+    }
 
-        public decimal PrecioSubtotal => Cantidad * PrecioUnitario; // Calcular PrecioSubtotal
+    public decimal PrecioSubtotal => Cantidad * PrecioUnitario; // Calcular PrecioSubtotal
 
-        public bool Recibido
+    public decimal TotalOrden => Cantidad * PrecioUnitario; // Calcular TotalOrden
+
+    public bool Recibido
+    {
+        get => _recibido;
+        set
         {
-            get => _recibido;
-            set
-            {
-                _recibido = value;
-                OnPropertyChanged(nameof(Recibido));
-            }
+            _recibido = value;
+            OnPropertyChanged(nameof(Recibido));
         }
+    }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+    protected void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

@@ -59,8 +59,8 @@
                         <StackPanel>
                             <Button Content="Control de Stock" Margin="5" Click="ControlDeStock"/>
                             <Button Content="Movimientos" Margin="5" Click="Movimiento"/>
-                            <Button Content="Ubicaciones" Margin="5"/>
-                            <Button Content="Inventario Físico" Margin="5"/>
+                            <Button Content="Ubicaciones" Margin="5" Click="MostrarUbicaciones"/>
+                            <Button Content="Inventario Físico" Margin="5" Click="MostrarInventario"/>
                         </StackPanel>
                     </GroupBox>
 
@@ -68,9 +68,10 @@
                     <GroupBox Header="Ventas" Margin="0,5">
                         <StackPanel>
                             <Button Content="Nueva Venta" Margin="5" Click="NuevaVenta_Click"/>
-                            <Button Content="Historial de Ventas" Margin="5"/>
-                            <Button Content="Devoluciones" Margin="5"/>
-                            <Button Content="Facturación" Margin="5"/>
+                            <Button Content="Historial de Ventas Físicas" Margin="5" Click="HistorialDeVentas"/>
+                            <Button Content="Historial de Ventas Web" Margin="5" Click="HistorialDeVentasWeb"/>
+                            <Button Content="Devoluciones" Margin="5" Click="Devoluciones"/>
+                         
                         </StackPanel>
                     </GroupBox>
 
@@ -78,17 +79,15 @@
                     <GroupBox Header="Compras" Margin="0,5">
                         <StackPanel>
                             <Button Content="Órdenes de Compra" Margin="5" Click="MisOrdenesDeCompra"/>
-                            <Button Content="Recepción de Mercancía" Margin="5"/>
-                            <Button Content="Gestión de Proveedores" Margin="5"/>
+                            <Button Content="Recepción de Mercancía" Margin="5" Click="MiRecepcionMercancia"/>
+                            <Button Content="Gestión de Proveedores" Margin="5" Click="MisProveedores"/>
                         </StackPanel>
                     </GroupBox>
 
                     <!-- Clientes -->
                     <GroupBox Header="Clientes" Margin="0,5">
                         <StackPanel>
-                            <Button Content="Gestión de Clientes" Margin="5"/>
-                            <Button Content="Historial de Clientes" Margin="5"/>
-                            <Button Content="Fidelización" Margin="5"/>
+                            <Button Content="Gestión de Clientes" Margin="5" Click="MisClientes"/>
                         </StackPanel>
                     </GroupBox>
 
@@ -96,9 +95,8 @@
                     <GroupBox Header="Recursos Humanos" Margin="0,5">
                         <StackPanel>
                             <Button Content="Empleados" Margin="5" Click="Trabajadores"/>
-                            <Button Content="Turnos y Horarios" Margin="5"/>
                             <Button Content="Nóminas" Margin="5" Click="MostrarNominas"/>
-                            <Button Content="Permisos y Vacaciones" Margin="5"/>
+                            <Button Content="Permisos y Vacaciones" Margin="5" Click="MisVacaciones"/>
                         </StackPanel>
                     </GroupBox>
 
